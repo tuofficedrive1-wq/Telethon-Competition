@@ -6,10 +6,6 @@
     <title>Live Competition Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Font - Using a clean sans-serif matching your design */
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-        body { font-family: 'Nunito', sans-serif; }
-
         /* Progress Bar Striped Animation */
         .progress-striped {
             background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
@@ -23,11 +19,11 @@
         .vs-circle { box-shadow: 0 0 0 10px #f9fafb; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen text-gray-800">
+<body class="bg-gray-50 min-h-screen font-sans text-gray-800">
 
-    <!-- SELECT COMPETITION SCREEN -->
+    <!-- SELECT COMPETITION SCREEN (Agar direct open kiya) -->
     <div id="selection-screen" class="hidden flex-col items-center justify-center min-h-screen p-6">
-        <h1 class="text-3xl font-black mb-8 text-indigo-900">Select Competition to View Live</h1>
+        <h1 class="text-3xl font-bold mb-8 text-indigo-900">Select Competition to View Live</h1>
         <div id="comp-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
             <!-- List will load here -->
         </div>
@@ -35,8 +31,9 @@
 
     <!-- MAIN LIVE DASHBOARD -->
     <div id="live-dashboard" class="hidden flex-col items-center justify-center min-h-screen p-4 md:p-10">
+        <h1 id="dash-title" class="text-4xl font-black text-slate-800 mb-2 uppercase tracking-wide">Competition Live</h1>
+        <p class="text-gray-500 font-medium mb-10">Live Updates in Realtime</p>
 
-        <!-- Top 2 VS SECTION -->
         <div class="relative flex flex-col lg:flex-row gap-6 lg:gap-10 w-full max-w-6xl items-stretch">
             
             <!-- VS BADGE -->
@@ -47,13 +44,13 @@
             <!-- TEAM 1 (WINNER STYLE) -->
             <div class="flex-1 winner-bg rounded-[2rem] p-8 shadow-sm relative overflow-hidden">
                 <div class="flex justify-between items-start mb-6">
-                    <h2 id="t1-name" class="text-3xl font-black text-slate-900 leading-tight pr-4">Team 1</h2>
-                    <span id="t1-badge" class="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-md shadow-orange-200 uppercase whitespace-nowrap">🏆 WINNER</span>
+                    <h2 id="t1-name" class="text-3xl font-extrabold text-slate-900 leading-tight pr-4">Team 1</h2>
+                    <span id="t1-badge" class="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-md shadow-orange-200 uppercase whitespace-nowrap">🏆 Winner</span>
                 </div>
                 
                 <p class="text-xs font-bold text-orange-500 uppercase tracking-widest flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    ACHIEVED UNITS
+                    Achieved Units
                 </p>
                 <div id="t1-score" class="text-[5rem] leading-none font-black text-red-600 mt-2 mb-2 tracking-tighter">0</div>
                 
@@ -63,18 +60,18 @@
 
                 <div class="flex gap-4 mt-8">
                     <div class="flex-1 border border-orange-100 bg-white/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-500 uppercase">🎯 HADAF</p>
-                        <p id="t1-target" class="text-2xl font-black text-slate-800 mt-1">0</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase">🎯 Hadaf</p>
+                        <p id="t1-target" class="text-2xl font-bold text-slate-800 mt-1">0</p>
                     </div>
                     <div class="flex-1 border border-orange-100 bg-white/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-500 uppercase">📈 PERCENT</p>
-                        <p id="t1-percent" class="text-2xl font-black text-slate-800 mt-1">0.0%</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase">📈 Percent</p>
+                        <p id="t1-percent" class="text-2xl font-bold text-slate-800 mt-1">0%</p>
                     </div>
                 </div>
 
                 <div class="mt-8">
                     <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>PROGRESS STATUS</span><span>TARGET 100%</span>
+                        <span>Progress Status</span><span>Target 100%</span>
                     </div>
                     <div class="h-3 w-full bg-orange-100 rounded-full overflow-hidden">
                         <div id="t1-bar" class="h-full bg-gradient-to-r from-red-500 to-orange-400 progress-striped rounded-full" style="width: 0%;"></div>
@@ -85,46 +82,45 @@
             <!-- TEAM 2 (CHALLENGER STYLE) -->
             <div class="flex-1 challenger-bg rounded-[2rem] p-8 shadow-sm relative">
                 <div class="flex justify-between items-start mb-6">
-                    <h2 id="t2-name" class="text-3xl font-black text-slate-800 leading-tight pr-4">Team 2</h2>
-                    <span id="t2-badge" class="bg-slate-100 text-slate-500 px-5 py-1.5 rounded-full text-sm font-bold border border-slate-200 uppercase whitespace-nowrap">CHALLENGER</span>
+                    <h2 id="t2-name" class="text-3xl font-extrabold text-slate-800 leading-tight pr-4">Team 2</h2>
+                    <span id="t2-badge" class="bg-slate-100 text-slate-500 px-5 py-1.5 rounded-full text-sm font-bold border border-slate-200 uppercase whitespace-nowrap">Challenger</span>
                 </div>
                 
                 <p class="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    ACHIEVED UNITS
+                    Achieved Units
                 </p>
                 <div id="t2-score" class="text-[5rem] leading-none font-black text-slate-700 mt-2 mb-2 tracking-tighter">0</div>
                 <div class="h-7"></div> <!-- Spacer matching the lead box -->
 
                 <div class="flex gap-4 mt-8">
                     <div class="flex-1 border border-slate-100 bg-slate-50/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-500 uppercase">🎯 HADAF</p>
-                        <p id="t2-target" class="text-2xl font-black text-slate-800 mt-1">0</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase">🎯 Hadaf</p>
+                        <p id="t2-target" class="text-2xl font-bold text-slate-800 mt-1">0</p>
                     </div>
                     <div class="flex-1 border border-slate-100 bg-slate-50/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-500 uppercase">📈 PERCENT</p>
-                        <p id="t2-percent" class="text-2xl font-black text-slate-800 mt-1">0.0%</p>
+                        <p class="text-xs font-bold text-gray-500 uppercase">📈 Percent</p>
+                        <p id="t2-percent" class="text-2xl font-bold text-slate-800 mt-1">0%</p>
                     </div>
                 </div>
 
                 <div class="mt-8">
                     <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>PROGRESS STATUS</span><span>TARGET 100%</span>
+                        <span>Progress Status</span><span>Target 100%</span>
                     </div>
                     <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div id="t2-bar" class="h-full bg-slate-300 progress-striped rounded-full" style="width: 0%;"></div>
+                        <div id="t2-bar" class="h-full bg-slate-400 progress-striped rounded-full" style="width: 0%;"></div>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- OTHER COMPETITORS (Matches your screenshot exactly) -->
-        <div id="other-teams-container" class="w-full max-w-6xl mt-12 hidden">
-            <h3 class="text-base font-black text-slate-500 uppercase mb-4 tracking-wide">OTHER COMPETITORS</h3>
-            
-            <div id="other-teams-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Generating via JS -->
+        <!-- OTHER TEAMS (If more than 2) -->
+        <div id="other-teams-container" class="w-full max-w-6xl mt-10 hidden">
+            <h3 class="text-lg font-bold text-slate-500 uppercase mb-4">Other Competitors</h3>
+            <div id="other-teams-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Generates dynamically -->
             </div>
         </div>
 
@@ -148,6 +144,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // Get Competition ID from URL (e.g., dashboard.html?id=comp_123)
     const urlParams = new URLSearchParams(window.location.search);
     const currentCompId = urlParams.get('id');
 
@@ -156,6 +153,7 @@
     }
 
     if (!currentCompId) {
+        // Agar ID nahi hai, toh selection screen dikhao
         document.getElementById('selection-screen').classList.remove('hidden');
         document.getElementById('selection-screen').classList.add('flex');
         
@@ -166,8 +164,9 @@
                 const comps = snapshot.val();
                 for (let id in comps) {
                     list.innerHTML += `
-                        <a href="?id=${id}" class="block bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:border-indigo-500 transition">
+                        <a href="?id=${id}" class="block bg-white p-6 rounded-2xl shadow-md border border-gray-100 hover:border-indigo-500 hover:shadow-lg transition">
                             <h2 class="text-2xl font-bold text-slate-800">${comps[id].name}</h2>
+                            <p class="text-gray-500 mt-2">Date: ${comps[id].date || 'N/A'}</p>
                             <div class="mt-4 text-indigo-600 font-bold">View Live Dashboard &rarr;</div>
                         </a>
                     `;
@@ -177,26 +176,29 @@
             }
         });
     } else {
+        // Live Dashboard Mode
         document.getElementById('live-dashboard').classList.remove('hidden');
         document.getElementById('live-dashboard').classList.add('flex');
 
         onValue(ref(db, 'competitions/' + currentCompId), (snapshot) => {
             if (snapshot.exists()) {
                 const comp = snapshot.val();
+                document.getElementById('dash-title').innerText = comp.name;
 
                 if (comp.teams) {
+                    // Teams ko array me convert karke Score ke hisaab se sort karo
                     let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]);
                     teamsArray.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
 
                     const t1 = teamsArray[0] || {name: "Team 1", amount: 0};
                     const t2 = teamsArray[1] || {name: "Team 2", amount: 0};
 
-                    // Hadaf Logic (Dynamically sets target to next thousand)
+                    // Auto Target Logic (Highest score ko nearest 1000 pe round up karo)
                     let highestScore = Number(t1.amount) || 0;
                     let dynamicTarget = Math.ceil((highestScore + 1) / 1000) * 1000;
-                    if(dynamicTarget < 2000) dynamicTarget = 2000; 
+                    if(dynamicTarget < 2000) dynamicTarget = 2000; // Minimum default target
 
-                    // --- TEAM 1 (WINNER SIDE) ---
+                    // --- TEAM 1 (WINNER) ---
                     document.getElementById('t1-name').innerText = t1.name;
                     document.getElementById('t1-score').innerText = formatNum(t1.amount);
                     
@@ -204,9 +206,9 @@
                     let leadBox = document.getElementById('t1-lead-box');
                     if(lead > 0) {
                         leadBox.classList.remove('hidden');
-                        document.getElementById('t1-lead').innerText = "↗ +" + formatNum(lead) + " Lead";
+                        document.getElementById('t1-lead').innerText = "+" + formatNum(lead) + " Lead";
                     } else {
-                        leadBox.classList.add('hidden');
+                        leadBox.classList.add('hidden'); // Agar tie hai ya score 0 hai
                     }
 
                     document.getElementById('t1-target').innerText = formatNum(dynamicTarget);
@@ -214,7 +216,7 @@
                     document.getElementById('t1-percent').innerText = t1Pct + "%";
                     document.getElementById('t1-bar').style.width = t1Pct + "%";
 
-                    // --- TEAM 2 (CHALLENGER SIDE) ---
+                    // --- TEAM 2 (CHALLENGER) ---
                     document.getElementById('t2-name').innerText = t2.name;
                     document.getElementById('t2-score').innerText = formatNum(t2.amount);
                     
@@ -223,7 +225,7 @@
                     document.getElementById('t2-percent').innerText = t2Pct + "%";
                     document.getElementById('t2-bar').style.width = t2Pct + "%";
 
-                    // Tie Check
+                    // Tie breaker visual adjustment
                     if(t1.amount === t2.amount && t1.amount > 0) {
                         document.getElementById('t1-badge').innerText = "TIE";
                         document.getElementById('t2-badge').innerText = "TIE";
@@ -232,24 +234,21 @@
                         document.getElementById('t2-badge').innerText = "CHALLENGER";
                     }
 
-                    // --- OTHER COMPETITORS (Rank 3 onwards) ---
+                    // --- OTHER TEAMS (Agar 3 ya zyada teams hain) ---
                     const otherContainer = document.getElementById('other-teams-container');
                     const otherList = document.getElementById('other-teams-list');
-                    
                     if (teamsArray.length > 2) {
                         otherContainer.classList.remove('hidden');
                         otherList.innerHTML = "";
-                        
-                        // Exact match to your screenshot design
                         for(let i = 2; i < teamsArray.length; i++) {
                             let t = teamsArray[i];
                             otherList.innerHTML += `
-                                <div class="bg-white border border-gray-100 rounded-[1rem] p-5 flex justify-between items-center shadow-sm">
+                                <div class="bg-white p-4 rounded-xl border border-gray-200 flex justify-between items-center shadow-sm">
                                     <div>
-                                        <div class="text-xs text-gray-400 font-bold uppercase mb-1 tracking-wide">RANK #${i+1}</div>
-                                        <div class="font-black text-xl text-slate-800">${t.name}</div>
+                                        <div class="text-xs text-gray-400 font-bold uppercase">Rank #${i+1}</div>
+                                        <div class="font-bold text-slate-800">${t.name}</div>
                                     </div>
-                                    <div class="text-2xl font-black text-slate-800">${formatNum(t.amount)}</div>
+                                    <div class="text-xl font-black text-slate-600">${formatNum(t.amount)}</div>
                                 </div>
                             `;
                         }
