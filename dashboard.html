@@ -181,6 +181,11 @@
             if (snapshot.exists()) {
                 const comp = snapshot.val();
                 
+                // Yahan par hum admin ka diya gaya naam title me set kar rahe hain
+                if(comp.name) {
+                    document.getElementById('dash-title').innerText = comp.name;
+                }
+
                 if (comp.teams) {
                     let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]);
                     teamsArray.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
