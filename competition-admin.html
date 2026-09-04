@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competition Admin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f7fb;padding:20px;}
+.container{max-width:1100px;margin:auto;}
+.header{background:#fff;padding:20px;border-radius:12px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 15px rgba(0,0,0,.08);}
+.logout{background:#dc3545;color:white;border:0;padding:10px 15px;border-radius:7px;cursor:pointer;}
+.card{background:#fff;padding:25px;border-radius:12px;margin-bottom:20px;box-shadow:0 4px 15px rgba(0,0,0,.08);}
+h2,h3{margin-bottom:18px}
+label{display:block;font-weight:bold;margin:12px 0 6px;}
+input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:15px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.team-box{background:#f8f9fa;padding:18px;border-radius:10px;}
+.save{margin-top:20px;width:100%;padding:14px;background:#1769aa;color:#fff;border:0;border-radius:8px;font-size:16px;cursor:pointer;}
+.teams{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.live{text-align:center;padding:25px 15px;border-radius:10px;background:#f8f9fa;}
+.live-name{font-size:20px;font-weight:bold;}
+.live-amount{font-size:30px;font-weight:bold;margin:15px 0;}
+.winner{text-align:center;font-size:28px;font-weight:bold;margin-top:25px;}
+.status{margin-top:15px;text-align:center;font-weight:bold;}
+@media(max-width:800px){.grid,.teams{grid-template-columns:1fr} .header{flex-direction:column;gap:15px}}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>Competition Admin</h2>
+        <button class="logout" id="logoutBtn">Logout</button>
+    </div>
+    <div class="card">
+        <h3>Competition Settings</h3>
+        <label>Competition Name</label>
+        <input id="competitionName" type="text">
+        <label>Competition Date</label>
+        <input id="competitionDate" type="date">
+        <label>Competition End Time</label>
+        <input id="competitionEndTime" type="time">
+        <div class="grid">
+            <div class="team-box">
+                <h3>Team A</h3>
+                <label>Team Name</label><input id="teamAName" type="text">
+                <label>Team Login ID</label><input id="teamAId" type="text">
+                <label>Password</label><input id="teamAPassword" type="password">
+            </div>
+            <div class="team-box">
+                <h3>Team B</h3>
+                <label>Team Name</label><input id="teamBName" type="text">
+                <label>Team Login ID</label><input id="teamBId" type="text">
+                <label>Password</label><input id="teamBPassword" type="password">
+            </div>
+            <div class="team-box">
+                <h3>Team C</h3>
+                <label>Team Name</label><input id="teamCName" type="text">
+                <label>Team Login ID</label><input id="teamCId" type="text">
+                <label>Password</label><input id="teamCPassword" type="password">
+            </div>
+        </div>
+        <button class="save" id="saveBtn">Save Competition</button>
+        <div class="status" id="status"></div>
+    </div>
+    <div class="card">
+        <h3>Live Competition</h3>
+        <div class="teams">
+            <div class="live"><div class="live-name" id="liveAName">Team A</div><div class="live-amount" id="liveAAmount">₹0</div></div>
+            <div class="live"><div class="live-name" id="liveBName">Team B</div><div class="live-amount" id="liveBAmount">₹0</div></div>
+            <div class="live"><div class="live-name" id="liveCName">Team C</div><div class="live-amount" id="liveCAmount">₹0</div></div>
+        </div>
+        <div class="winner" id="winner">Winner: -</div>
+    </div>
+</div>
+<script type="module" src="assets/js/competition-admin.js"></script>
+</body>
+</html>
