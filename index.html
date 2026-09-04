@@ -50,13 +50,12 @@
 </head>
 <body>
 
-    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen" class="screen active-screen">
         <div class="card">
             <h2 class="text-center">Competition Login</h2>
-            <div class="text-center" style="color:#777; margin-bottom: 20px;">Admin ya Team ID daalein</div>
+            <div class="text-center" style="color:#777; margin-bottom: 20px;">Admin ya User ID daalein</div>
             <label>Login ID</label>
-            <input id="loginId" type="text" placeholder="Enter ID (Admin/Team)">
+            <input id="loginId" type="text" placeholder="Enter ID">
             <label>Password</label>
             <input id="loginPass" type="password" placeholder="Enter Password">
             <button id="loginBtn" style="width: 100%; margin-top: 20px;">Login</button>
@@ -64,7 +63,6 @@
         </div>
     </div>
 
-    <!-- 2. ADMIN: ALL COMPETITIONS DASHBOARD -->
     <div id="admin-dash-screen" class="screen">
         <div class="topbar">
             <h2>Admin Dashboard</h2>
@@ -76,12 +74,10 @@
                 <button id="createNewCompBtn" class="btn-success" style="width:auto; margin:0;">+ Create New Competition</button>
             </div>
             <div id="competitionsList" style="margin-top: 20px;">
-                <!-- List renders here -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- 3. ADMIN: CREATE / EDIT COMPETITION -->
     <div id="admin-edit-screen" class="screen">
         <div class="topbar">
             <h2>Competition Setup</h2>
@@ -94,9 +90,9 @@
             <input id="compDate" type="date">
             
             <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Teams</h3>
+            <p style="font-size: 13px; color: #666; margin-top: 5px;">Agar ek hi banday ko multiple teams deni hain, toh un teams ka <b>Login ID</b> aur <b>Password</b> same rakhein.</p>
             <div id="teamInputsContainer" class="teams-grid">
-                <!-- Team Inputs generate here -->
-            </div>
+                </div>
             
             <button id="addTeamBtn" class="btn-secondary mt-3">+ Add Another Team</button>
             
@@ -106,7 +102,6 @@
         </div>
     </div>
 
-    <!-- 4. ADMIN: LIVE VIEW -->
     <div id="admin-live-screen" class="screen">
         <div class="topbar">
             <h2 id="liveCompTitle">Live Dashboard</h2>
@@ -114,44 +109,36 @@
         </div>
         <div class="card">
             <div id="adminLiveTeamsContainer" class="live-teams">
-                <!-- Live boxes generate here -->
-            </div>
+                </div>
             <div class="winner-text" id="adminLiveWinner">Winner: -</div>
         </div>
     </div>
 
-    <!-- 5. TEAM SCREEN -->
     <div id="team-screen" class="screen">
         <div class="topbar">
             <div>
-                <h2 id="teamUiName">Team Name</h2>
+                <h2>My Assigned Teams</h2>
                 <div id="teamUiCompName" style="color:#666;">-</div>
             </div>
             <button class="btn-danger logoutBtn">Logout</button>
         </div>
         
-        <div class="card">
-            <h3>Update Your Collection</h3>
-            <div class="huge-amount" id="teamUiMyAmount">₹0</div>
-            <input id="teamInputAmount" type="number" min="0" placeholder="Enter total amount here">
-            <button class="btn-success" id="teamUpdateBtn">Update My Amount</button>
-        </div>
+        <div class="card" id="teamUpdateFormsContainer">
+            </div>
 
         <div class="card">
             <h3>Live Leaderboard</h3>
             <div id="teamLiveContainer" class="live-teams">
-                <!-- All teams in this comp live display -->
-            </div>
+                </div>
             <div class="winner-text" id="teamLiveWinner">-</div>
         </div>
     </div>
 
-<!-- FIREBASE & LOGIC SCRIPT -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    // ✅ YAHAN APNA FIREBASE CONFIG DAALEIN
+    // ✅ FIREBASE CONFIG
     const firebaseConfig = {
         apiKey: "AIzaSyC87_ca7MsGB2WjOnr6dC-IYL78TYx0Oyg",
         authDomain: "telethon-28c88.firebaseapp.com",
@@ -167,8 +154,7 @@
 
     // Global State
     let currentRole = localStorage.getItem('userRole') || null;
-    let myCompId = localStorage.getItem('myCompId') || null;
-    let myTeamId = localStorage.getItem('myTeamId') || null;
+    let managedTeams = JSON.parse(localStorage.getItem('managedTeams')) || []; // Array to hold multiple teams: [{compId, teamId}]
     let activeAdminCompId = null; 
     let editingCompId = null;
     let globalCompetitions = {}; // Store realtime data locally
@@ -180,20 +166,24 @@
     }
 
     // Auto-Login Check
-    if (currentRole === 'admin') { switchScreen('admin-dash-screen'); } 
-    else if (currentRole === 'team' && myCompId && myTeamId) { switchScreen('team-screen'); }
+    if (currentRole === 'admin') { 
+        switchScreen('admin-dash-screen'); 
+    } 
+    else if (currentRole === 'team' && managedTeams && managedTeams.length > 0) { 
+        switchScreen('team-screen'); 
+    }
 
     // Logout
     document.querySelectorAll('.logoutBtn').forEach(btn => {
         btn.addEventListener('click', () => {
             localStorage.clear();
-            currentRole = null; myCompId = null; myTeamId = null;
+            currentRole = null; managedTeams = [];
             switchScreen('login-screen');
         });
     });
 
     // ==========================================
-    // 1. LOGIN LOGIC
+    // 1. LOGIN LOGIC (MODIFIED FOR MULTIPLE TEAMS)
     // ==========================================
     document.getElementById('loginBtn').addEventListener('click', async () => {
         const id = document.getElementById('loginId').value.trim();
@@ -212,25 +202,34 @@
             return;
         }
 
-        // Team Dynamic Check (Search in all competitions)
+        // User/Team Dynamic Check (Search in all competitions for assigned Login IDs)
         try {
             const snap = await get(ref(db, 'competitions'));
             if(snap.exists()){
                 const comps = snap.val();
-                let found = false;
+                let foundTeams = []; // Ek user ki kayi teams ho sakti hain
+                
                 for(let cId in comps) {
-                    if(comps[cId].teams && comps[cId].teams[id] && comps[cId].teams[id].password === pass) {
-                        localStorage.setItem('userRole', 'team');
-                        localStorage.setItem('myCompId', cId);
-                        localStorage.setItem('myTeamId', id);
-                        currentRole = 'team'; myCompId = cId; myTeamId = id;
-                        found = true;
-                        msg.innerText = "";
-                        switchScreen('team-screen');
-                        break;
+                    if(comps[cId].teams) {
+                        for(let tId in comps[cId].teams) {
+                            let t = comps[cId].teams[tId];
+                            if(t.loginId === id && t.password === pass) {
+                                foundTeams.push({ compId: cId, teamId: tId });
+                            }
+                        }
                     }
                 }
-                if(!found) msg.innerHTML = "<span style='color:red'>Invalid Team ID or Password!</span>";
+
+                if(foundTeams.length > 0) {
+                    localStorage.setItem('userRole', 'team');
+                    localStorage.setItem('managedTeams', JSON.stringify(foundTeams));
+                    currentRole = 'team'; 
+                    managedTeams = foundTeams;
+                    msg.innerText = "";
+                    switchScreen('team-screen');
+                } else {
+                    msg.innerHTML = "<span style='color:red'>Invalid ID or Password!</span>";
+                }
             } else {
                 msg.innerHTML = "<span style='color:red'>No competitions found!</span>";
             }
@@ -238,27 +237,24 @@
     });
 
     // ==========================================
-    // 2. REALTIME DATABASE LISTENER (CORE ENGINE)
+    // 2. REALTIME DATABASE LISTENER
     // ==========================================
     onValue(ref(db, 'competitions'), (snapshot) => {
         globalCompetitions = snapshot.exists() ? snapshot.val() : {};
         
-        // Update Admin Dashboard
         if (currentRole === 'admin' && document.getElementById('admin-dash-screen').classList.contains('active-screen')) {
             renderAdminDashboard();
         }
-        // Update Admin Live View
         if (currentRole === 'admin' && activeAdminCompId && document.getElementById('admin-live-screen').classList.contains('active-screen')) {
             renderAdminLiveView();
         }
-        // Update Team Screen
-        if (currentRole === 'team' && myCompId && myTeamId && document.getElementById('team-screen').classList.contains('active-screen')) {
+        if (currentRole === 'team' && managedTeams.length > 0 && document.getElementById('team-screen').classList.contains('active-screen')) {
             renderTeamScreen();
         }
     });
 
     // ==========================================
-    // 3. ADMIN: DASHBOARD & CREATE COMP
+    // 3. ADMIN: DASHBOARD
     // ==========================================
     function renderAdminDashboard() {
         const list = document.getElementById('competitionsList');
@@ -286,7 +282,6 @@
         
         if(!hasComps) list.innerHTML = "<p>No competitions yet. Create one!</p>";
 
-        // Attach dynamic events
         document.querySelectorAll('.viewLiveBtn').forEach(btn => btn.onclick = (e) => {
             activeAdminCompId = e.target.getAttribute('data-id');
             switchScreen('admin-live-screen');
@@ -307,7 +302,7 @@
     document.getElementById('backToDashFromLiveBtn').onclick = () => { activeAdminCompId = null; switchScreen('admin-dash-screen'); renderAdminDashboard(); };
 
     // ==========================================
-    // 4. ADMIN: EDITOR (DYNAMIC TEAMS)
+    // 4. ADMIN: EDITOR (MODIFIED FOR LOGIN ID)
     // ==========================================
     function openEditor(compId) {
         editingCompId = compId || "comp_" + Date.now();
@@ -320,13 +315,12 @@
             document.getElementById('compDate').value = comp.date;
             if(comp.teams) {
                 for(let tId in comp.teams) {
-                    appendTeamInputUI(tId, comp.teams[tId].name, comp.teams[tId].password, comp.teams[tId].amount);
+                    appendTeamInputUI(tId, comp.teams[tId].name, comp.teams[tId].loginId || tId, comp.teams[tId].password, comp.teams[tId].amount);
                 }
             }
         } else {
             document.getElementById('compName').value = "";
             document.getElementById('compDate').value = "";
-            // Default 2 teams for new comp
             appendTeamInputUI(); appendTeamInputUI();
         }
         switchScreen('admin-edit-screen');
@@ -334,20 +328,21 @@
 
     document.getElementById('addTeamBtn').onclick = () => { appendTeamInputUI(); };
 
-    function appendTeamInputUI(tId = "", tName = "", tPass = "", tAmount = 0) {
+    function appendTeamInputUI(tId = "", tName = "", tLoginId = "", tPass = "", tAmount = 0) {
         const div = document.createElement('div');
         div.className = "team-box team-entry";
-        div.dataset.amount = tAmount; // Store amount secretly so it isn't lost on edit
+        div.dataset.amount = tAmount; 
         
-        // Auto-generate ID if new
+        // Internal unique ID 
         const uid = tId || "team_" + Math.floor(Math.random() * 100000); 
+        div.dataset.teamId = uid;
         
         div.innerHTML = `
             <button class="remove-team text-white border-0 cursor-pointer" onclick="this.parentElement.remove()">X Remove</button>
             <label>Team Name</label>
             <input type="text" class="t-name" value="${tName}" placeholder="Enter Team Name">
-            <label>Login ID</label>
-            <input type="text" class="t-id" value="${uid}" readonly style="background:#eee;">
+            <label>Login ID (Username)</label>
+            <input type="text" class="t-login-id" value="${tLoginId}" placeholder="Enter Login ID">
             <label>Password</label>
             <input type="text" class="t-pass" value="${tPass}" placeholder="Enter Password">
         `;
@@ -361,9 +356,10 @@
         
         let teamsData = {};
         document.querySelectorAll('.team-entry').forEach(el => {
-            const id = el.querySelector('.t-id').value;
+            const id = el.dataset.teamId;
             teamsData[id] = {
                 name: el.querySelector('.t-name').value || "Unnamed",
+                loginId: el.querySelector('.t-login-id').value || id, 
                 password: el.querySelector('.t-pass').value || "1234",
                 amount: Number(el.dataset.amount) || 0
             };
@@ -382,7 +378,7 @@
     };
 
     // ==========================================
-    // 5. LIVE VIEW LOGIC (Used by Admin & Team)
+    // 5. LIVE VIEW LOGIC
     // ==========================================
     function calculateWinner(teamsObj) {
         if(!teamsObj) return "-";
@@ -425,18 +421,42 @@
         document.getElementById('adminLiveWinner').innerText = "Winner: " + calculateWinner(comp.teams);
     }
 
+    // ==========================================
+    // 6. MULTIPLE TEAM SCREEN LOGIC
+    // ==========================================
     function renderTeamScreen() {
-        const comp = globalCompetitions[myCompId];
-        if(!comp || !comp.teams || !comp.teams[myTeamId]) {
-            alert("Your team data was removed by Admin.");
-            localStorage.clear(); location.reload(); return;
-        }
+        if(!managedTeams || managedTeams.length === 0) return;
 
-        const myTeam = comp.teams[myTeamId];
-        document.getElementById('teamUiName').innerText = myTeam.name;
+        // Display competition name based on the first assigned team's competition
+        let mainCompId = managedTeams[0].compId; 
+        const comp = globalCompetitions[mainCompId];
+        if(!comp) return;
+
         document.getElementById('teamUiCompName').innerText = comp.name;
-        document.getElementById('teamUiMyAmount').innerText = "₹" + myTeam.amount;
 
+        // Render Update Boxes For All Assigned Teams
+        const container = document.getElementById('teamUpdateFormsContainer');
+        let formsHtml = `<h3>Update Your Teams Collection</h3>`;
+
+        managedTeams.forEach(mt => {
+            const c = globalCompetitions[mt.compId];
+            if(c && c.teams && c.teams[mt.teamId]) {
+                const t = c.teams[mt.teamId];
+                formsHtml += `
+                    <div style="background:#f8f9fa; padding:20px; border-radius:8px; margin-top:15px; border:2px solid #eee;">
+                        <div class="flex-between">
+                            <h4 style="color:#1769aa; font-size:18px;">${t.name}</h4>
+                        </div>
+                        <div class="huge-amount" id="amt_${mt.teamId}" style="margin: 10px 0; font-size: 35px;">₹${t.amount}</div>
+                        <input id="input_${mt.teamId}" type="number" min="0" placeholder="Enter new total amount here" style="margin-bottom:10px;">
+                        <button class="btn-success" onclick="updateTeamAmount('${mt.compId}', '${mt.teamId}')" style="margin-top:5px;">Update Amount For ${t.name}</button>
+                    </div>
+                `;
+            }
+        });
+        container.innerHTML = formsHtml;
+
+        // Live Leaderboard (using mainCompId)
         let maxAmt = 0;
         for(let id in comp.teams) { if(comp.teams[id].amount > maxAmt) maxAmt = comp.teams[id].amount; }
 
@@ -444,26 +464,19 @@
         document.getElementById('teamLiveWinner').innerText = "Current Winner: " + calculateWinner(comp.teams);
     }
 
-    // ==========================================
-    // 6. TEAM UPDATE AMOUNT
-    // ==========================================
-    document.getElementById('teamUpdateBtn').onclick = async () => {
-        const input = document.getElementById('teamInputAmount');
+    // Global function taake button ka inline onclick event kaam kar sake
+    window.updateTeamAmount = async (cId, tId) => {
+        const input = document.getElementById('input_' + tId);
         const newAmt = Number(input.value);
         if(input.value === "" || newAmt < 0) { alert("Enter valid amount"); return; }
         
-        const btn = document.getElementById('teamUpdateBtn');
-        btn.innerText = "Updating..."; btn.disabled = true;
-
-        // Optimistic UI (Fauran Update ho jayega user ki screen pe bina delay)
-        document.getElementById('teamUiMyAmount').innerText = "₹" + newAmt;
+        // Optimistic UI update for immediate response
+        document.getElementById('amt_' + tId).innerText = "₹" + newAmt;
 
         try {
-            await update(ref(db, `competitions/${myCompId}/teams/${myTeamId}`), { amount: newAmt });
+            await update(ref(db, `competitions/${cId}/teams/${tId}`), { amount: newAmt });
             input.value = "";
-        } catch(e) { alert("Failed to update"); }
-        
-        btn.innerText = "Update My Amount"; btn.disabled = false;
+        } catch(e) { alert("Failed to update database."); }
     };
 
 </script>
