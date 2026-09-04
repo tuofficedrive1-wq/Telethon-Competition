@@ -4,7 +4,7 @@ import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic
 const firebaseConfig = {
   apiKey: "AIzaSyC87_ca7MsGB2WjOnr6dC-IYL78TYx0Oyg",
   authDomain: "telethon-28c88.firebaseapp.com",
-  databaseURL: "https://telethon-28c88-default-rtdb.firebaseio.com", // Zaroori line add kar di gayi hai
+  databaseURL: "https://telethon-28c88-default-rtdb.firebaseio.com",
   projectId: "telethon-28c88",
   storageBucket: "telethon-28c88.firebasestorage.app",
   messagingSenderId: "609452116316",
