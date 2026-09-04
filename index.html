@@ -13,9 +13,9 @@
     /* Global Styles */
     .card { background: #fff; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,.08); }
     .topbar { background: #fff; padding: 18px 22px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,.08); }
-    h2, h3 { margin-bottom: 15px; color: #333; }
+    h2, h3, h4 { margin-bottom: 15px; color: #333; }
     label { display: block; font-weight: bold; margin: 12px 0 6px; font-size: 14px; }
-    input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
     button { padding: 12px 18px; border: 0; border-radius: 8px; background: #1769aa; color: white; font-size: 16px; cursor: pointer; transition: 0.3s; }
     button:hover { background: #0d568e; }
     .btn-danger { background: #dc3545; }
@@ -26,11 +26,10 @@
     .text-center { text-align: center; }
     .mt-3 { margin-top: 15px; }
     .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-    /* Login Screen */
+    /* Login & Teams */
     #login-screen { max-width: 400px; margin: 80px auto; }
-
-    /* Admin Grids & Lists */
     .comp-list-item { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee; }
     .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 15px; }
     .team-box { background: #f8f9fa; padding: 18px; border-radius: 10px; position: relative; border: 1px solid #ddd; }
@@ -43,14 +42,11 @@
     .live-name { font-size: 20px; font-weight: bold; }
     .live-amount { font-size: 32px; font-weight: bold; margin: 15px 0; color: #198754; }
     .winner-text { text-align: center; font-size: 28px; font-weight: bold; margin-top: 25px; color: #d00; }
-
-    /* Team Interface */
     .huge-amount { font-size: 50px; font-weight: bold; text-align: center; margin: 20px 0; color: #1769aa; }
 </style>
 </head>
 <body>
 
-    <!-- 1. LOGIN SCREEN -->
     <div id="login-screen" class="screen active-screen">
         <div class="card">
             <h2 class="text-center">Competition Login</h2>
@@ -64,7 +60,6 @@
         </div>
     </div>
 
-    <!-- 2. ADMIN: ALL COMPETITIONS DASHBOARD -->
     <div id="admin-dash-screen" class="screen">
         <div class="topbar">
             <h2>Admin Dashboard</h2>
@@ -75,13 +70,10 @@
                 <h3>All Competitions</h3>
                 <button id="createNewCompBtn" class="btn-success" style="width:auto; margin:0;">+ Create New Competition</button>
             </div>
-            <div id="competitionsList" style="margin-top: 20px;">
-                <!-- List renders here -->
-            </div>
+            <div id="competitionsList" style="margin-top: 20px;"></div>
         </div>
     </div>
 
-    <!-- 3. ADMIN: CREATE / EDIT COMPETITION -->
     <div id="admin-edit-screen" class="screen">
         <div class="topbar">
             <h2>Competition Setup</h2>
@@ -90,13 +82,36 @@
         <div class="card">
             <label>Competition Name</label>
             <input id="compName" type="text" placeholder="E.g. Grand Finale 2026">
-            <label>Date</label>
-            <input id="compDate" type="date">
+            
+            <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Dashboard & Time Settings</h3>
+            <div class="settings-grid">
+                <div>
+                    <label>Dashboard View Type</label>
+                    <select id="dashViewType">
+                        <option value="versus">Versus (Top 2 Focus)</option>
+                        <option value="category">Category Wise List</option>
+                    </select>
+                </div>
+                <div>
+                    <label>End Date & Time</label>
+                    <input id="compEndTime" type="datetime-local">
+                </div>
+                <div>
+                    <label>Result Delay (Minutes)</label>
+                    <input id="compDelay" type="number" placeholder="E.g. 5 (Minutes after end time)">
+                </div>
+            </div>
+
+            <h4 style="margin-top: 20px;">Category Minimum Targets (For Category View)</h4>
+            <div class="settings-grid">
+                <div><label>Category A Minimum</label><input id="catA" type="number" value="10000"></div>
+                <div><label>Category B Minimum</label><input id="catB" type="number" value="5000"></div>
+                <div><label>Category C Minimum</label><input id="catC" type="number" value="2000"></div>
+                <div><label>Category D Minimum</label><input id="catD" type="number" value="0"></div>
+            </div>
             
             <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Teams</h3>
-            <div id="teamInputsContainer" class="teams-grid">
-                <!-- Team Inputs generate here -->
-            </div>
+            <div id="teamInputsContainer" class="teams-grid"></div>
             
             <button id="addTeamBtn" class="btn-secondary mt-3">+ Add Another Team</button>
             
@@ -106,21 +121,17 @@
         </div>
     </div>
 
-    <!-- 4. ADMIN: LIVE VIEW -->
     <div id="admin-live-screen" class="screen">
         <div class="topbar">
             <h2 id="liveCompTitle">Live Dashboard</h2>
             <button class="btn-secondary" id="backToDashFromLiveBtn">Back</button>
         </div>
         <div class="card">
-            <div id="adminLiveTeamsContainer" class="live-teams">
-                <!-- Live boxes generate here -->
-            </div>
+            <div id="adminLiveTeamsContainer" class="live-teams"></div>
             <div class="winner-text" id="adminLiveWinner">Winner: -</div>
         </div>
     </div>
 
-    <!-- 5. TEAM SCREEN -->
     <div id="team-screen" class="screen">
         <div class="topbar">
             <div>
@@ -139,19 +150,16 @@
 
         <div class="card">
             <h3>Live Leaderboard</h3>
-            <div id="teamLiveContainer" class="live-teams">
-                <!-- All teams in this comp live display -->
-            </div>
+            <div id="teamLiveContainer" class="live-teams"></div>
             <div class="winner-text" id="teamLiveWinner">-</div>
         </div>
     </div>
 
-<!-- FIREBASE & LOGIC SCRIPT -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    // ✅ YAHAN APNA FIREBASE CONFIG DAALEIN
+    // APNA FIREBASE CONFIG YAHAN DAALEIN
     const firebaseConfig = {
         apiKey: "AIzaSyC87_ca7MsGB2WjOnr6dC-IYL78TYx0Oyg",
         authDomain: "telethon-28c88.firebaseapp.com",
@@ -165,25 +173,21 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Global State
     let currentRole = localStorage.getItem('userRole') || null;
     let myCompId = localStorage.getItem('myCompId') || null;
     let myTeamId = localStorage.getItem('myTeamId') || null;
     let activeAdminCompId = null; 
     let editingCompId = null;
-    let globalCompetitions = {}; // Store realtime data locally
+    let globalCompetitions = {}; 
 
-    // Screen Routing
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
         document.getElementById(screenId).classList.add('active-screen');
     }
 
-    // Auto-Login Check
     if (currentRole === 'admin') { switchScreen('admin-dash-screen'); } 
     else if (currentRole === 'team' && myCompId && myTeamId) { switchScreen('team-screen'); }
 
-    // Logout
     document.querySelectorAll('.logoutBtn').forEach(btn => {
         btn.addEventListener('click', () => {
             localStorage.clear();
@@ -192,9 +196,6 @@
         });
     });
 
-    // ==========================================
-    // 1. LOGIN LOGIC
-    // ==========================================
     document.getElementById('loginBtn').addEventListener('click', async () => {
         const id = document.getElementById('loginId').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
@@ -203,16 +204,12 @@
         if(!id || !pass) { msg.innerHTML = "<span style='color:red'>ID and Password required</span>"; return; }
         msg.innerHTML = "<span style='color:blue'>Verifying...</span>";
 
-        // Admin hardcoded check
         if(id === 'admin' && pass === 'admin123') {
             localStorage.setItem('userRole', 'admin');
-            currentRole = 'admin';
-            msg.innerText = "";
-            switchScreen('admin-dash-screen');
-            return;
+            currentRole = 'admin'; msg.innerText = "";
+            switchScreen('admin-dash-screen'); return;
         }
 
-        // Team Dynamic Check (Search in all competitions)
         try {
             const snap = await get(ref(db, 'competitions'));
             if(snap.exists()){
@@ -221,84 +218,48 @@
                 for(let cId in comps) {
                     if(comps[cId].teams && comps[cId].teams[id] && comps[cId].teams[id].password === pass) {
                         localStorage.setItem('userRole', 'team');
-                        localStorage.setItem('myCompId', cId);
-                        localStorage.setItem('myTeamId', id);
-                        currentRole = 'team'; myCompId = cId; myTeamId = id;
-                        found = true;
-                        msg.innerText = "";
-                        switchScreen('team-screen');
-                        break;
+                        localStorage.setItem('myCompId', cId); localStorage.setItem('myTeamId', id);
+                        currentRole = 'team'; myCompId = cId; myTeamId = id; found = true;
+                        msg.innerText = ""; switchScreen('team-screen'); break;
                     }
                 }
                 if(!found) msg.innerHTML = "<span style='color:red'>Invalid Team ID or Password!</span>";
-            } else {
-                msg.innerHTML = "<span style='color:red'>No competitions found!</span>";
-            }
+            } else { msg.innerHTML = "<span style='color:red'>No competitions found!</span>"; }
         } catch(e) { msg.innerHTML = "<span style='color:red'>Error connecting to database</span>"; }
     });
 
-    // ==========================================
-    // 2. REALTIME DATABASE LISTENER (CORE ENGINE)
-    // ==========================================
     onValue(ref(db, 'competitions'), (snapshot) => {
         globalCompetitions = snapshot.exists() ? snapshot.val() : {};
-        
-        // Update Admin Dashboard
-        if (currentRole === 'admin' && document.getElementById('admin-dash-screen').classList.contains('active-screen')) {
-            renderAdminDashboard();
-        }
-        // Update Admin Live View
-        if (currentRole === 'admin' && activeAdminCompId && document.getElementById('admin-live-screen').classList.contains('active-screen')) {
-            renderAdminLiveView();
-        }
-        // Update Team Screen
-        if (currentRole === 'team' && myCompId && myTeamId && document.getElementById('team-screen').classList.contains('active-screen')) {
-            renderTeamScreen();
-        }
+        if (currentRole === 'admin' && document.getElementById('admin-dash-screen').classList.contains('active-screen')) renderAdminDashboard();
+        if (currentRole === 'admin' && activeAdminCompId && document.getElementById('admin-live-screen').classList.contains('active-screen')) renderAdminLiveView();
+        if (currentRole === 'team' && myCompId && myTeamId && document.getElementById('team-screen').classList.contains('active-screen')) renderTeamScreen();
     });
 
-    // ==========================================
-    // 3. ADMIN: DASHBOARD & CREATE COMP
-    // ==========================================
     function renderAdminDashboard() {
         const list = document.getElementById('competitionsList');
-        list.innerHTML = "";
-        let hasComps = false;
+        list.innerHTML = ""; let hasComps = false;
 
         for(let cId in globalCompetitions) {
-            hasComps = true;
-            const comp = globalCompetitions[cId];
-            const div = document.createElement('div');
-            div.className = "comp-list-item";
+            hasComps = true; const comp = globalCompetitions[cId];
+            const div = document.createElement('div'); div.className = "comp-list-item";
             div.innerHTML = `
                 <div>
                     <h3 style="margin-bottom:5px;">${comp.name}</h3>
-                    <div style="font-size:14px; color:#666;">Date: ${comp.date || 'N/A'} | Teams: ${comp.teams ? Object.keys(comp.teams).length : 0}</div>
+                    <div style="font-size:14px; color:#666;">Teams: ${comp.teams ? Object.keys(comp.teams).length : 0} | View: ${comp.settings?.viewType || 'versus'}</div>
                 </div>
                 <div>
                     <button class="btn-success viewLiveBtn" data-id="${cId}" style="margin-right:10px;">Live View</button>
                     <button class="btn-secondary editCompBtn" data-id="${cId}" style="margin-right:10px;">Edit</button>
                     <button class="btn-danger deleteCompBtn" data-id="${cId}">Delete</button>
-                </div>
-            `;
+                </div>`;
             list.appendChild(div);
         }
-        
         if(!hasComps) list.innerHTML = "<p>No competitions yet. Create one!</p>";
 
-        // Attach dynamic events
-        document.querySelectorAll('.viewLiveBtn').forEach(btn => btn.onclick = (e) => {
-            activeAdminCompId = e.target.getAttribute('data-id');
-            switchScreen('admin-live-screen');
-            renderAdminLiveView();
-        });
-        document.querySelectorAll('.editCompBtn').forEach(btn => btn.onclick = (e) => {
-            openEditor(e.target.getAttribute('data-id'));
-        });
+        document.querySelectorAll('.viewLiveBtn').forEach(btn => btn.onclick = (e) => { activeAdminCompId = e.target.getAttribute('data-id'); switchScreen('admin-live-screen'); renderAdminLiveView(); });
+        document.querySelectorAll('.editCompBtn').forEach(btn => btn.onclick = (e) => { openEditor(e.target.getAttribute('data-id')); });
         document.querySelectorAll('.deleteCompBtn').forEach(btn => btn.onclick = async (e) => {
-            if(confirm("Are you sure you want to delete this competition?")) {
-                await remove(ref(db, 'competitions/' + e.target.getAttribute('data-id')));
-            }
+            if(confirm("Are you sure you want to delete this competition?")) await remove(ref(db, 'competitions/' + e.target.getAttribute('data-id')));
         });
     }
 
@@ -306,9 +267,6 @@
     document.getElementById('backToAdminDashBtn').onclick = () => { switchScreen('admin-dash-screen'); renderAdminDashboard(); };
     document.getElementById('backToDashFromLiveBtn').onclick = () => { activeAdminCompId = null; switchScreen('admin-dash-screen'); renderAdminDashboard(); };
 
-    // ==========================================
-    // 4. ADMIN: EDITOR (DYNAMIC TEAMS)
-    // ==========================================
     function openEditor(compId) {
         editingCompId = compId || "comp_" + Date.now();
         document.getElementById('teamInputsContainer').innerHTML = "";
@@ -316,17 +274,27 @@
 
         if(compId && globalCompetitions[compId]) {
             const comp = globalCompetitions[compId];
-            document.getElementById('compName').value = comp.name;
-            document.getElementById('compDate').value = comp.date;
+            document.getElementById('compName').value = comp.name || "";
+            document.getElementById('dashViewType').value = comp.settings?.viewType || "versus";
+            document.getElementById('compEndTime').value = comp.settings?.endTime || "";
+            document.getElementById('compDelay').value = comp.settings?.delayMin || 0;
+            document.getElementById('catA').value = comp.settings?.catA || 10000;
+            document.getElementById('catB').value = comp.settings?.catB || 5000;
+            document.getElementById('catC').value = comp.settings?.catC || 2000;
+            document.getElementById('catD').value = comp.settings?.catD || 0;
+
             if(comp.teams) {
-                for(let tId in comp.teams) {
-                    appendTeamInputUI(tId, comp.teams[tId].name, comp.teams[tId].password, comp.teams[tId].amount);
-                }
+                for(let tId in comp.teams) appendTeamInputUI(tId, comp.teams[tId].name, comp.teams[tId].password, comp.teams[tId].amount);
             }
         } else {
             document.getElementById('compName').value = "";
-            document.getElementById('compDate').value = "";
-            // Default 2 teams for new comp
+            document.getElementById('dashViewType').value = "versus";
+            document.getElementById('compEndTime').value = "";
+            document.getElementById('compDelay').value = 0;
+            document.getElementById('catA').value = 10000;
+            document.getElementById('catB').value = 5000;
+            document.getElementById('catC').value = 2000;
+            document.getElementById('catD').value = 0;
             appendTeamInputUI(); appendTeamInputUI();
         }
         switchScreen('admin-edit-screen');
@@ -336,54 +304,43 @@
 
     function appendTeamInputUI(tId = "", tName = "", tPass = "", tAmount = 0) {
         const div = document.createElement('div');
-        div.className = "team-box team-entry";
-        div.dataset.amount = tAmount; // Store amount secretly so it isn't lost on edit
-        
-        // Auto-generate ID if new
+        div.className = "team-box team-entry"; div.dataset.amount = tAmount; 
         const uid = tId || "team_" + Math.floor(Math.random() * 100000); 
-        
         div.innerHTML = `
             <button class="remove-team text-white border-0 cursor-pointer" onclick="this.parentElement.remove()">X Remove</button>
-            <label>Team Name</label>
-            <input type="text" class="t-name" value="${tName}" placeholder="Enter Team Name">
-            <label>Login ID</label>
-            <input type="text" class="t-id" value="${uid}" readonly style="background:#eee;">
-            <label>Password</label>
-            <input type="text" class="t-pass" value="${tPass}" placeholder="Enter Password">
+            <label>Team Name</label><input type="text" class="t-name" value="${tName}" placeholder="Enter Team Name">
+            <label>Login ID</label><input type="text" class="t-id" value="${uid}" readonly style="background:#eee;">
+            <label>Password</label><input type="text" class="t-pass" value="${tPass}" placeholder="Enter Password">
         `;
         document.getElementById('teamInputsContainer').appendChild(div);
     }
 
     document.getElementById('saveCompBtn').onclick = async () => {
-        const compName = document.getElementById('compName').value || "Unnamed Competition";
-        const compDate = document.getElementById('compDate').value;
         const status = document.getElementById('saveStatus');
-        
         let teamsData = {};
         document.querySelectorAll('.team-entry').forEach(el => {
             const id = el.querySelector('.t-id').value;
-            teamsData[id] = {
-                name: el.querySelector('.t-name').value || "Unnamed",
-                password: el.querySelector('.t-pass').value || "1234",
-                amount: Number(el.dataset.amount) || 0
-            };
+            teamsData[id] = { name: el.querySelector('.t-name').value || "Unnamed", password: el.querySelector('.t-pass').value || "1234", amount: Number(el.dataset.amount) || 0 };
         });
+
+        const settingsData = {
+            viewType: document.getElementById('dashViewType').value,
+            endTime: document.getElementById('compEndTime').value,
+            delayMin: Number(document.getElementById('compDelay').value) || 0,
+            catA: Number(document.getElementById('catA').value) || 10000,
+            catB: Number(document.getElementById('catB').value) || 5000,
+            catC: Number(document.getElementById('catC').value) || 2000,
+            catD: Number(document.getElementById('catD').value) || 0
+        };
 
         status.innerHTML = "<span style='color:blue'>Saving...</span>";
         try {
-            await set(ref(db, 'competitions/' + editingCompId), {
-                name: compName,
-                date: compDate,
-                teams: teamsData
-            });
+            await set(ref(db, 'competitions/' + editingCompId), { name: document.getElementById('compName').value || "Unnamed", settings: settingsData, teams: teamsData });
             status.innerHTML = "<span style='color:green'>Saved Successfully!</span>";
             setTimeout(() => { switchScreen('admin-dash-screen'); renderAdminDashboard(); }, 1000);
         } catch(e) { status.innerHTML = "<span style='color:red'>Error saving data</span>"; }
     };
 
-    // ==========================================
-    // 5. LIVE VIEW LOGIC (Used by Admin & Team)
-    // ==========================================
     function calculateWinner(teamsObj) {
         if(!teamsObj) return "-";
         let maxAmt = 0; let winnerName = "-"; let tie = false;
@@ -392,80 +349,47 @@
             if(amt > maxAmt) { maxAmt = amt; winnerName = teamsObj[id].name; tie = false; }
             else if(amt === maxAmt && amt > 0) { tie = true; }
         }
-        if(maxAmt === 0) return "Competition hasn't started";
-        if(tie) return "Tie / Draw";
-        return winnerName;
+        if(maxAmt === 0) return "Not Started"; return tie ? "Tie / Draw" : winnerName;
     }
 
     function generateLiveHTML(teamsObj, maxAmtObj) {
         if(!teamsObj) return "<p>No teams</p>";
         let html = "";
         for(let id in teamsObj) {
-            const t = teamsObj[id];
-            const isWinner = (t.amount > 0 && t.amount === maxAmtObj.max);
-            html += `
-                <div class="live-box ${isWinner ? 'winner-box' : ''}">
-                    <div class="live-name">${t.name}</div>
-                    <div class="live-amount">₹${t.amount}</div>
-                </div>
-            `;
+            const t = teamsObj[id]; const isWinner = (t.amount > 0 && t.amount === maxAmtObj.max);
+            html += `<div class="live-box ${isWinner ? 'winner-box' : ''}"><div class="live-name">${t.name}</div><div class="live-amount">₹${t.amount}</div></div>`;
         }
         return html;
     }
 
     function renderAdminLiveView() {
-        const comp = globalCompetitions[activeAdminCompId];
-        if(!comp) return;
+        const comp = globalCompetitions[activeAdminCompId]; if(!comp) return;
         document.getElementById('liveCompTitle').innerText = comp.name;
-        
-        let maxAmt = 0;
-        if(comp.teams) { for(let id in comp.teams) { if(comp.teams[id].amount > maxAmt) maxAmt = comp.teams[id].amount; } }
-        
+        let maxAmt = 0; if(comp.teams) { for(let id in comp.teams) { if(comp.teams[id].amount > maxAmt) maxAmt = comp.teams[id].amount; } }
         document.getElementById('adminLiveTeamsContainer').innerHTML = generateLiveHTML(comp.teams, {max: maxAmt});
         document.getElementById('adminLiveWinner').innerText = "Winner: " + calculateWinner(comp.teams);
     }
 
     function renderTeamScreen() {
         const comp = globalCompetitions[myCompId];
-        if(!comp || !comp.teams || !comp.teams[myTeamId]) {
-            alert("Your team data was removed by Admin.");
-            localStorage.clear(); location.reload(); return;
-        }
-
-        const myTeam = comp.teams[myTeamId];
-        document.getElementById('teamUiName').innerText = myTeam.name;
+        if(!comp || !comp.teams || !comp.teams[myTeamId]) { alert("Data removed by Admin."); localStorage.clear(); location.reload(); return; }
+        document.getElementById('teamUiName').innerText = comp.teams[myTeamId].name;
         document.getElementById('teamUiCompName').innerText = comp.name;
-        document.getElementById('teamUiMyAmount').innerText = "₹" + myTeam.amount;
-
-        let maxAmt = 0;
-        for(let id in comp.teams) { if(comp.teams[id].amount > maxAmt) maxAmt = comp.teams[id].amount; }
-
+        document.getElementById('teamUiMyAmount').innerText = "₹" + comp.teams[myTeamId].amount;
+        let maxAmt = 0; for(let id in comp.teams) { if(comp.teams[id].amount > maxAmt) maxAmt = comp.teams[id].amount; }
         document.getElementById('teamLiveContainer').innerHTML = generateLiveHTML(comp.teams, {max: maxAmt});
         document.getElementById('teamLiveWinner').innerText = "Current Winner: " + calculateWinner(comp.teams);
     }
 
-    // ==========================================
-    // 6. TEAM UPDATE AMOUNT
-    // ==========================================
     document.getElementById('teamUpdateBtn').onclick = async () => {
-        const input = document.getElementById('teamInputAmount');
-        const newAmt = Number(input.value);
+        const input = document.getElementById('teamInputAmount'); const newAmt = Number(input.value);
         if(input.value === "" || newAmt < 0) { alert("Enter valid amount"); return; }
-        
-        const btn = document.getElementById('teamUpdateBtn');
-        btn.innerText = "Updating..."; btn.disabled = true;
-
-        // Optimistic UI (Fauran Update ho jayega user ki screen pe bina delay)
+        const btn = document.getElementById('teamUpdateBtn'); btn.innerText = "Updating..."; btn.disabled = true;
         document.getElementById('teamUiMyAmount').innerText = "₹" + newAmt;
-
-        try {
-            await update(ref(db, `competitions/${myCompId}/teams/${myTeamId}`), { amount: newAmt });
-            input.value = "";
-        } catch(e) { alert("Failed to update"); }
-        
+        try { await update(ref(db, `competitions/${myCompId}/teams/${myTeamId}`), { amount: newAmt }); input.value = ""; } 
+        catch(e) { alert("Failed to update"); }
         btn.innerText = "Update My Amount"; btn.disabled = false;
     };
-
 </script>
 </body>
 </html>
