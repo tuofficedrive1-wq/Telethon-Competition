@@ -6,7 +6,6 @@
     <title>Live Competition Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Progress Bar Striped Animation */
         .progress-striped {
             background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
             background-size: 1rem 1rem;
@@ -17,110 +16,65 @@
 </head>
 <body class="bg-slate-900 min-h-screen font-sans text-gray-200">
 
-    <!-- SELECT COMPETITION SCREEN -->
     <div id="selection-screen" class="hidden flex-col items-center justify-center min-h-screen p-6">
         <h1 class="text-4xl font-black mb-8 text-white drop-shadow-md">Select Competition to View Live</h1>
-        <div id="comp-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
-            <!-- List will load here -->
-        </div>
+        <div id="comp-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl"></div>
     </div>
 
-    <!-- MAIN LIVE DASHBOARD -->
-    <div id="live-dashboard" class="hidden flex-col items-center justify-center min-h-screen p-4 md:p-10">
-        <!-- ATTRACTIVE HEADINGS -->
+    <div id="live-dashboard" class="hidden flex-col items-center justify-center min-h-screen p-4 md:p-10 w-full">
+        
         <h1 id="dash-title" class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2 uppercase tracking-wide drop-shadow-lg text-center">Competition Live</h1>
-        <p class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-12 tracking-widest uppercase animate-pulse drop-shadow-md text-center">Semi Final Muqabla</p>
-
-        <div class="relative flex flex-col lg:flex-row gap-6 lg:gap-10 w-full max-w-6xl items-stretch">
-            
-            <!-- VS BADGE -->
-            <div class="hidden lg:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-800 border-[8px] border-slate-900 rounded-full h-24 w-24 items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10">
-                <span class="text-3xl font-black text-slate-400 italic">VS</span>
-            </div>
-
-            <!-- TEAM 1 (WINNER STYLE - DARK THEME) -->
-            <div class="flex-1 bg-slate-800 border-2 border-orange-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(249,115,22,0.2)] relative overflow-hidden">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 id="t1-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 1</h2>
-                    <span id="t1-badge" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-[0_0_10px_rgba(249,115,22,0.5)] uppercase whitespace-nowrap">🏆 Winner</span>
-                </div>
-                
-                <p class="text-xs font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    Achieved Units
-                </p>
-                <div id="t1-score" class="text-[5rem] leading-none font-black text-orange-500 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
-                
-                <div id="t1-lead-box" class="inline-flex items-center gap-1 bg-green-500/20 border border-green-500/30 text-green-400 px-3 py-1 rounded-lg text-sm font-bold">
-                    ↗ <span id="t1-lead-top">+0 Lead</span>
-                </div>
-
-                <div class="flex gap-4 mt-8">
-                    <!-- AAGE (LEAD) -->
-                    <div class="flex-1 border border-orange-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">🚀 Aage (Lead)</p>
-                        <p id="t1-lead-amount" class="text-2xl font-bold text-green-400 mt-1">0</p>
-                    </div>
-                    <div class="flex-1 border border-orange-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">📈 Percent</p>
-                        <p id="t1-percent" class="text-2xl font-bold text-white mt-1">0%</p>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>Progress Status</span><span>Target 100%</span>
-                    </div>
-                    <div class="h-3 w-full bg-slate-700 rounded-full overflow-hidden">
-                        <div id="t1-bar" class="h-full bg-gradient-to-r from-orange-500 to-red-500 progress-striped rounded-full" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TEAM 2 (CHALLENGER STYLE - DARK THEME) -->
-            <div class="flex-1 bg-slate-800 border-2 border-cyan-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(6,182,212,0.2)] relative">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 id="t2-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 2</h2>
-                    <span id="t2-badge" class="bg-slate-700 text-gray-300 px-5 py-1.5 rounded-full text-sm font-bold border border-slate-600 uppercase whitespace-nowrap">Challenger</span>
-                </div>
-                
-                <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    Achieved Units
-                </p>
-                <div id="t2-score" class="text-[5rem] leading-none font-black text-cyan-400 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
-                <div class="h-7"></div> <!-- Spacer matching the lead box -->
-
-                <div class="flex gap-4 mt-8">
-                    <!-- PICHE (TRAIL) -->
-                    <div class="flex-1 border border-cyan-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">⚠️ Piche (Trail)</p>
-                        <p id="t2-trail-amount" class="text-2xl font-bold text-red-400 mt-1">0</p>
-                    </div>
-                    <div class="flex-1 border border-cyan-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">📈 Percent</p>
-                        <p id="t2-percent" class="text-2xl font-bold text-white mt-1">0%</p>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>Progress Status</span><span>Target 100%</span>
-                    </div>
-                    <div class="h-3 w-full bg-slate-700 rounded-full overflow-hidden">
-                        <div id="t2-bar" class="h-full bg-cyan-500 progress-striped rounded-full" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
+        <p id="dash-subtitle" class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-8 tracking-widest uppercase animate-pulse drop-shadow-md text-center">Live Muqabla</p>
+        
+        <div id="waiting-screen" class="hidden w-full max-w-4xl bg-slate-800 border-2 border-yellow-500 rounded-3xl p-10 text-center shadow-[0_0_30px_rgba(234,179,8,0.2)]">
+            <h2 class="text-4xl font-black text-yellow-400 mb-4 animate-pulse">Results are being Compiled!</h2>
+            <p class="text-xl text-gray-300">Competition time is over. Please wait for the final results.</p>
         </div>
 
-        <!-- OTHER TEAMS (If more than 2) -->
-        <div id="other-teams-container" class="w-full max-w-6xl mt-12 hidden">
-            <h3 class="text-lg font-bold text-slate-400 uppercase mb-4 tracking-wider">Other Competitors</h3>
-            <div id="other-teams-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Generates dynamically -->
+        <div id="versus-view" class="hidden flex-col w-full max-w-6xl items-center">
+            <div class="relative flex flex-col lg:flex-row gap-6 lg:gap-10 w-full items-stretch">
+                <div class="hidden lg:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-800 border-[8px] border-slate-900 rounded-full h-24 w-24 items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10">
+                    <span class="text-3xl font-black text-slate-400 italic">VS</span>
+                </div>
+
+                <div class="flex-1 bg-slate-800 border-2 border-orange-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(249,115,22,0.2)] relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 id="t1-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 1</h2>
+                        <span id="t1-badge" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-[0_0_10px_rgba(249,115,22,0.5)] uppercase whitespace-nowrap">🏆 Winner</span>
+                    </div>
+                    <div id="t1-score" class="text-[5rem] leading-none font-black text-orange-500 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
+                    <div class="flex gap-4 mt-8">
+                        <div class="flex-1 border border-orange-500/30 bg-slate-700/50 rounded-2xl p-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase">🚀 Aage (Lead)</p>
+                            <p id="t1-lead-amount" class="text-2xl font-bold text-green-400 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 bg-slate-800 border-2 border-cyan-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(6,182,212,0.2)] relative">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 id="t2-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 2</h2>
+                        <span id="t2-badge" class="bg-slate-700 text-gray-300 px-5 py-1.5 rounded-full text-sm font-bold border border-slate-600 uppercase whitespace-nowrap">Challenger</span>
+                    </div>
+                    <div id="t2-score" class="text-[5rem] leading-none font-black text-cyan-400 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
+                    <div class="flex gap-4 mt-8">
+                        <div class="flex-1 border border-cyan-500/30 bg-slate-700/50 rounded-2xl p-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase">⚠️ Piche (Trail)</p>
+                            <p id="t2-trail-amount" class="text-2xl font-bold text-red-400 mt-1">0</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <div id="other-teams-container" class="w-full mt-12 hidden">
+                <h3 class="text-lg font-bold text-slate-400 uppercase mb-4 tracking-wider">Other Competitors</h3>
+                <div id="other-teams-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            </div>
+        </div>
+
+        <div id="category-view" class="hidden w-full max-w-6xl">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6" id="category-grid">
+                </div>
         </div>
 
     </div>
@@ -129,7 +83,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    // ✅ APNA FIREBASE CONFIG YAHAN DAALEIN
+    // APNA FIREBASE CONFIG YAHAN DAALEIN
     const firebaseConfig = {
         apiKey: "AIzaSyC87_ca7MsGB2WjOnr6dC-IYL78TYx0Oyg",
         authDomain: "telethon-28c88.firebaseapp.com",
@@ -142,36 +96,24 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
-    // Get Competition ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const currentCompId = urlParams.get('id');
 
-    function formatNum(num) {
-        return Number(num).toLocaleString('en-IN', { maximumFractionDigits: 1 });
-    }
+    let currentCompData = null;
+
+    function formatNum(num) { return Number(num).toLocaleString('en-IN'); }
 
     if (!currentCompId) {
         document.getElementById('selection-screen').classList.remove('hidden');
         document.getElementById('selection-screen').classList.add('flex');
-        
         onValue(ref(db, 'competitions'), (snapshot) => {
-            const list = document.getElementById('comp-list');
-            list.innerHTML = "";
+            const list = document.getElementById('comp-list'); list.innerHTML = "";
             if (snapshot.exists()) {
                 const comps = snapshot.val();
                 for (let id in comps) {
-                    list.innerHTML += `
-                        <a href="?id=${id}" class="block bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-700 hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition transform hover:-translate-y-1">
-                            <h2 class="text-2xl font-bold text-white">${comps[id].name}</h2>
-                            <p class="text-gray-400 mt-2">Date: ${comps[id].date || 'N/A'}</p>
-                            <div class="mt-4 text-indigo-400 font-bold flex items-center gap-2">View Live Dashboard <span>&rarr;</span></div>
-                        </a>
-                    `;
+                    list.innerHTML += `<a href="?id=${id}" class="block bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-700 hover:border-indigo-500 transition transform hover:-translate-y-1"><h2 class="text-2xl font-bold text-white">${comps[id].name}</h2><div class="mt-4 text-indigo-400 font-bold flex items-center gap-2">View Live Dashboard &rarr;</div></a>`;
                 }
-            } else {
-                list.innerHTML = "<p class='text-gray-400'>No active competitions found.</p>";
-            }
+            } else { list.innerHTML = "<p class='text-gray-400'>No active competitions.</p>"; }
         });
     } else {
         document.getElementById('live-dashboard').classList.remove('hidden');
@@ -179,98 +121,147 @@
 
         onValue(ref(db, 'competitions/' + currentCompId), (snapshot) => {
             if (snapshot.exists()) {
-                const comp = snapshot.val();
-                
-                // Yahan par hum admin ka diya gaya naam title me set kar rahe hain
-                if(comp.name) {
-                    document.getElementById('dash-title').innerText = comp.name;
-                }
-
-                if (comp.teams) {
-                    let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]);
-                    teamsArray.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
-
-                    const t1 = teamsArray[0] || {name: "Team 1", amount: 0};
-                    const t2 = teamsArray[1] || {name: "Team 2", amount: 0};
-
-                    let highestScore = Number(t1.amount) || 0;
-                    let dynamicTarget = Math.ceil((highestScore + 1) / 1000) * 1000;
-                    if(dynamicTarget < 2000) dynamicTarget = 2000; 
-                    
-                    let lead = (Number(t1.amount) || 0) - (Number(t2.amount) || 0);
-
-                    // --- TEAM 1 (WINNER) ---
-                    document.getElementById('t1-name').innerText = t1.name;
-                    document.getElementById('t1-score').innerText = formatNum(t1.amount);
-                    
-                    let leadBox = document.getElementById('t1-lead-box');
-                    if(lead > 0) {
-                        leadBox.classList.remove('hidden');
-                        document.getElementById('t1-lead-top').innerText = "+" + formatNum(lead) + " Lead";
-                    } else {
-                        leadBox.classList.add('hidden');
-                    }
-
-                    // Aage (Lead) update
-                    document.getElementById('t1-lead-amount').innerText = "+" + formatNum(lead);
-                    
-                    let t1Pct = Math.min(((t1.amount / dynamicTarget) * 100), 100).toFixed(1);
-                    document.getElementById('t1-percent').innerText = t1Pct + "%";
-                    document.getElementById('t1-bar').style.width = t1Pct + "%";
-
-                    // --- TEAM 2 (CHALLENGER) ---
-                    document.getElementById('t2-name').innerText = t2.name;
-                    document.getElementById('t2-score').innerText = formatNum(t2.amount);
-                    
-                    // Piche (Trail) update
-                    document.getElementById('t2-trail-amount').innerText = "-" + formatNum(lead);
-                    
-                    let t2Pct = Math.min(((t2.amount / dynamicTarget) * 100), 100).toFixed(1);
-                    document.getElementById('t2-percent').innerText = t2Pct + "%";
-                    document.getElementById('t2-bar').style.width = t2Pct + "%";
-
-                    if(t1.amount === t2.amount && t1.amount > 0) {
-                        document.getElementById('t1-badge').innerText = "TIE";
-                        document.getElementById('t2-badge').innerText = "TIE";
-                    } else {
-                        document.getElementById('t1-badge').innerHTML = "🏆 WINNER";
-                        document.getElementById('t2-badge').innerText = "CHALLENGER";
-                    }
-
-                    // --- OTHER TEAMS ---
-                    const otherContainer = document.getElementById('other-teams-container');
-                    const otherList = document.getElementById('other-teams-list');
-                    
-                    if (teamsArray.length > 2) {
-                        otherContainer.classList.remove('hidden');
-                        otherList.innerHTML = "";
-                        for(let i = 2; i < teamsArray.length; i++) {
-                            let t = teamsArray[i];
-                            let neededToJoin = (Number(t2.amount) || 0) - (Number(t.amount) || 0);
-                            
-                            otherList.innerHTML += `
-                                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-md flex flex-col justify-between hover:border-indigo-500 transition">
-                                    <div class="flex justify-between items-start mb-3">
-                                        <div>
-                                            <div class="text-xs text-indigo-400 font-bold uppercase mb-1">Rank #${i+1}</div>
-                                            <div class="font-extrabold text-lg text-white">${t.name}</div>
-                                        </div>
-                                        <div class="text-3xl font-black text-slate-200">${formatNum(t.amount)}</div>
-                                    </div>
-                                    <div class="mt-2 pt-3 border-t border-slate-700">
-                                        <div class="text-sm font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-2 rounded-lg inline-block w-full text-center">
-                                            Aage aane ke liye <span class="text-amber-300 font-black">${formatNum(neededToJoin)}</span> units chahiye
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    } else {
-                        otherContainer.classList.add('hidden');
-                    }
-                }
+                currentCompData = snapshot.val();
+                document.getElementById('dash-title').innerText = currentCompData.name || "Competition Live";
+                renderDashboardLogic();
             }
         });
+
+        // Check time every second
+        setInterval(renderDashboardLogic, 1000);
+    }
+
+    function renderDashboardLogic() {
+        if(!currentCompData) return;
+        const comp = currentCompData;
+        
+        // Time & Delay Logic
+        const now = new Date().getTime();
+        let showResults = true;
+        let isWaiting = false;
+
+        if (comp.settings && comp.settings.endTime) {
+            const endTimeMs = new Date(comp.settings.endTime).getTime();
+            const delayMs = (comp.settings.delayMin || 0) * 60000;
+            
+            if (now > endTimeMs && now < (endTimeMs + delayMs)) {
+                isWaiting = true; // Still in compile delay period
+                showResults = false;
+            }
+        }
+
+        // Screens handling
+        const vsView = document.getElementById('versus-view');
+        const catView = document.getElementById('category-view');
+        const waitScreen = document.getElementById('waiting-screen');
+
+        if (isWaiting) {
+            waitScreen.classList.remove('hidden');
+            vsView.classList.add('hidden'); catView.classList.add('hidden');
+            document.getElementById('dash-subtitle').innerText = "Competition Closed";
+            return;
+        } else {
+            waitScreen.classList.add('hidden');
+        }
+
+        const viewType = comp.settings?.viewType || 'versus';
+        document.getElementById('dash-subtitle').innerText = viewType === 'category' ? "Category Wise Leaderboard" : "Semi Final Muqabla";
+
+        if(viewType === 'versus') {
+            catView.classList.add('hidden');
+            vsView.classList.remove('hidden'); vsView.classList.add('flex');
+            renderVersusView(comp);
+        } else {
+            vsView.classList.add('hidden'); vsView.classList.remove('flex');
+            catView.classList.remove('hidden');
+            renderCategoryView(comp);
+        }
+    }
+
+    function renderVersusView(comp) {
+        if (!comp.teams) return;
+        let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]).sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
+        const t1 = teamsArray[0] || {name: "Team 1", amount: 0};
+        const t2 = teamsArray[1] || {name: "Team 2", amount: 0};
+        let lead = (Number(t1.amount) || 0) - (Number(t2.amount) || 0);
+
+        document.getElementById('t1-name').innerText = t1.name; document.getElementById('t1-score').innerText = formatNum(t1.amount);
+        document.getElementById('t1-lead-amount').innerText = "+" + formatNum(lead);
+        
+        document.getElementById('t2-name').innerText = t2.name; document.getElementById('t2-score').innerText = formatNum(t2.amount);
+        document.getElementById('t2-trail-amount').innerText = "-" + formatNum(lead);
+
+        if(t1.amount === t2.amount && t1.amount > 0) { document.getElementById('t1-badge').innerText = "TIE"; document.getElementById('t2-badge').innerText = "TIE"; } 
+        else { document.getElementById('t1-badge').innerHTML = "🏆 WINNER"; document.getElementById('t2-badge').innerText = "CHALLENGER"; }
+
+        const otherContainer = document.getElementById('other-teams-container');
+        const otherList = document.getElementById('other-teams-list');
+        if (teamsArray.length > 2) {
+            otherContainer.classList.remove('hidden'); otherList.innerHTML = "";
+            for(let i = 2; i < teamsArray.length; i++) {
+                let t = teamsArray[i]; let needed = (Number(t2.amount) || 0) - (Number(t.amount) || 0);
+                otherList.innerHTML += `<div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-md">
+                    <div class="flex justify-between"><div class="font-bold text-white">${t.name}</div><div class="text-2xl font-black">${formatNum(t.amount)}</div></div>
+                    <div class="text-sm mt-2 text-amber-400">Aage aane ke liye ${formatNum(needed)} chahiye</div></div>`;
+            }
+        } else { otherContainer.classList.add('hidden'); }
+    }
+
+    function renderCategoryView(comp) {
+        if (!comp.teams) return;
+        const s = comp.settings || {};
+        const limits = [
+            { id: 'A', name: 'Category A', min: Number(s.catA) || 10000, color: 'from-green-400 to-green-600', next: null },
+            { id: 'B', name: 'Category B', min: Number(s.catB) || 5000, color: 'from-blue-400 to-blue-600', next: Number(s.catA) || 10000 },
+            { id: 'C', name: 'Category C', min: Number(s.catC) || 2000, color: 'from-purple-400 to-purple-600', next: Number(s.catB) || 5000 },
+            { id: 'D', name: 'Category D', min: Number(s.catD) || 0, color: 'from-gray-400 to-gray-600', next: Number(s.catC) || 2000 }
+        ];
+
+        let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]).sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
+        let catsObj = { A: [], B: [], C: [], D: [] };
+
+        teamsArray.forEach(t => {
+            let amt = Number(t.amount) || 0;
+            if (amt >= limits[0].min) catsObj.A.push(t);
+            else if (amt >= limits[1].min) catsObj.B.push(t);
+            else if (amt >= limits[2].min) catsObj.C.push(t);
+            else catsObj.D.push(t);
+        });
+
+        let gridHtml = '';
+        limits.forEach(cat => {
+            let teamsHtml = catsObj[cat.id].map(t => {
+                let amt = Number(t.amount);
+                let neededHtml = '';
+                if(cat.next !== null) {
+                    let needed = cat.next - amt;
+                    neededHtml = `<div class="text-[11px] bg-slate-700/50 text-gray-300 px-2 py-1 rounded mt-2">Next Category ke liye: <b>${formatNum(needed)}</b> chahiye</div>`;
+                } else {
+                    neededHtml = `<div class="text-[11px] bg-green-900/30 text-green-400 px-2 py-1 rounded mt-2">Top Category 🏆</div>`;
+                }
+                return `<div class="bg-slate-700/40 p-4 rounded-xl border border-slate-600 mb-3 flex flex-col">
+                            <div class="flex justify-between items-center"><span class="font-bold text-white text-lg">${t.name}</span><span class="font-black text-xl text-white">${formatNum(amt)}</span></div>
+                            ${neededHtml}
+                        </div>`;
+            }).join('');
+
+            if(teamsHtml === '') teamsHtml = `<div class="text-slate-500 text-sm text-center py-4 italic">No teams yet</div>`;
+
+            gridHtml += `
+                <div class="bg-slate-800 border-t-4 border-slate-600 rounded-2xl p-5 shadow-lg flex flex-col h-full relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${cat.color}"></div>
+                    <div class="flex justify-between items-end mb-4 border-b border-slate-700 pb-3">
+                        <h3 class="text-2xl font-black text-white">${cat.name}</h3>
+                        <span class="text-xs font-bold text-gray-400 bg-slate-900 px-2 py-1 rounded">Min: ${formatNum(cat.min)}</span>
+                    </div>
+                    <div class="flex-1 overflow-y-auto pr-1">
+                        ${teamsHtml}
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('category-grid').innerHTML = gridHtml;
     }
 </script>
 </body>
