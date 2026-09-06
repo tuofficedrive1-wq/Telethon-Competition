@@ -3,124 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Competition Dashboard</title>
+    <title>Jamiaat Live Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Progress Bar Striped Animation */
-        .progress-striped {
-            background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
-            background-size: 1rem 1rem;
-            animation: progress-move 1s linear infinite;
-        }
-        @keyframes progress-move { 0% { background-position: 1rem 0; } 100% { background-position: 0 0; } }
+        .neon-shadow-gold { box-shadow: 0 0 15px rgba(234, 179, 8, 0.4), inset 0 0 10px rgba(234, 179, 8, 0.1); }
+        .neon-shadow-silver { box-shadow: 0 0 15px rgba(56, 189, 248, 0.4), inset 0 0 10px rgba(56, 189, 248, 0.1); }
+        .neon-shadow-bronze { box-shadow: 0 0 15px rgba(249, 115, 22, 0.4), inset 0 0 10px rgba(249, 115, 22, 0.1); }
+        .neon-shadow-default { box-shadow: 0 0 10px rgba(156, 163, 175, 0.2); }
+        body { background: #0f172a; } /* Slate 900 */
     </style>
 </head>
-<body class="bg-slate-900 min-h-screen font-sans text-gray-200">
+<body class="min-h-screen font-sans text-gray-200">
 
-    <!-- SELECT COMPETITION SCREEN -->
+    <!-- SELECT RECORD SCREEN -->
     <div id="selection-screen" class="hidden flex-col items-center justify-center min-h-screen p-6">
-        <h1 class="text-4xl font-black mb-8 text-white drop-shadow-md">Select Competition to View Live</h1>
-        <div id="comp-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
-            <!-- List will load here -->
-        </div>
+        <h1 class="text-4xl font-black mb-8 text-white drop-shadow-md">Select Record to View Live</h1>
+        <div id="comp-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl"></div>
     </div>
 
-    <!-- MAIN LIVE DASHBOARD -->
-    <div id="live-dashboard" class="hidden flex-col items-center justify-center min-h-screen p-4 md:p-10">
-        <!-- ATTRACTIVE HEADINGS -->
-        <h1 id="dash-title" class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2 uppercase tracking-wide drop-shadow-lg text-center">Competition Live</h1>
-        <p class="text-xl md:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-12 tracking-widest uppercase animate-pulse drop-shadow-md text-center">Semi Final Muqabla</p>
+    <!-- MAIN LIVE CATEGORY DASHBOARD -->
+    <div id="live-dashboard" class="hidden flex-col items-center min-h-screen p-4 md:p-10">
+        
+        <h1 id="dash-title" class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 mb-4 uppercase tracking-wide drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)] text-center">
+            Live Leaderboard
+        </h1>
+        <p class="text-xl md:text-2xl font-bold text-gray-400 mb-12 tracking-widest uppercase text-center">
+            Jamiaat Rankings Category Wise
+        </p>
 
-        <div class="relative flex flex-col lg:flex-row gap-6 lg:gap-10 w-full max-w-6xl items-stretch">
-            
-            <!-- VS BADGE -->
-            <div class="hidden lg:flex absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-800 border-[8px] border-slate-900 rounded-full h-24 w-24 items-center justify-center shadow-[0_0_20px_rgba(0,0,0,0.5)] z-10">
-                <span class="text-3xl font-black text-slate-400 italic">VS</span>
-            </div>
-
-            <!-- TEAM 1 (WINNER STYLE - DARK THEME) -->
-            <div class="flex-1 bg-slate-800 border-2 border-orange-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(249,115,22,0.2)] relative overflow-hidden">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 id="t1-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 1</h2>
-                    <span id="t1-badge" class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-1.5 rounded-full text-sm font-bold shadow-[0_0_10px_rgba(249,115,22,0.5)] uppercase whitespace-nowrap">🏆 Winner</span>
-                </div>
-                
-                <p class="text-xs font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    Achieved Units
-                </p>
-                <div id="t1-score" class="text-[5rem] leading-none font-black text-orange-500 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
-                
-                <div id="t1-lead-box" class="inline-flex items-center gap-1 bg-green-500/20 border border-green-500/30 text-green-400 px-3 py-1 rounded-lg text-sm font-bold">
-                    ↗ <span id="t1-lead-top">+0 Lead</span>
-                </div>
-
-                <div class="flex gap-4 mt-8">
-                    <!-- AAGE (LEAD) -->
-                    <div class="flex-1 border border-orange-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">🚀 Aage (Lead)</p>
-                        <p id="t1-lead-amount" class="text-2xl font-bold text-green-400 mt-1">0</p>
-                    </div>
-                    <div class="flex-1 border border-orange-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">📈 Percent</p>
-                        <p id="t1-percent" class="text-2xl font-bold text-white mt-1">0%</p>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>Progress Status</span><span>Target 100%</span>
-                    </div>
-                    <div class="h-3 w-full bg-slate-700 rounded-full overflow-hidden">
-                        <div id="t1-bar" class="h-full bg-gradient-to-r from-orange-500 to-red-500 progress-striped rounded-full" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TEAM 2 (CHALLENGER STYLE - DARK THEME) -->
-            <div class="flex-1 bg-slate-800 border-2 border-cyan-500 rounded-[2rem] p-8 shadow-[0_0_25px_rgba(6,182,212,0.2)] relative">
-                <div class="flex justify-between items-start mb-6">
-                    <h2 id="t2-name" class="text-3xl font-extrabold text-white leading-tight pr-4">Team 2</h2>
-                    <span id="t2-badge" class="bg-slate-700 text-gray-300 px-5 py-1.5 rounded-full text-sm font-bold border border-slate-600 uppercase whitespace-nowrap">Challenger</span>
-                </div>
-                
-                <p class="text-xs font-bold text-cyan-400 uppercase tracking-widest flex items-center gap-1">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M11.3 1.046A12.014 12.014 0 0010 1a10.001 10.001 0 00-8.254 15.68l.26.353.353-.26A10.001 10.001 0 0010 19c4.32 0 8-2.735 9.4-6.6a1 1 0 00-1.12-1.3A7.962 7.962 0 0110 13a7.96 7.96 0 01-5.75-2.45l.26-.354c.734-.99 1.76-1.638 2.87-1.85a3.993 3.993 0 013.92-3.296z"/></svg>
-                    Achieved Units
-                </p>
-                <div id="t2-score" class="text-[5rem] leading-none font-black text-cyan-400 mt-2 mb-2 tracking-tighter drop-shadow-md">0</div>
-                <div class="h-7"></div> <!-- Spacer matching the lead box -->
-
-                <div class="flex gap-4 mt-8">
-                    <!-- PICHE (TRAIL) -->
-                    <div class="flex-1 border border-cyan-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">⚠️ Piche (Trail)</p>
-                        <p id="t2-trail-amount" class="text-2xl font-bold text-red-400 mt-1">0</p>
-                    </div>
-                    <div class="flex-1 border border-cyan-500/30 bg-slate-700/50 rounded-2xl p-4">
-                        <p class="text-xs font-bold text-gray-400 uppercase">📈 Percent</p>
-                        <p id="t2-percent" class="text-2xl font-bold text-white mt-1">0%</p>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <div class="flex justify-between text-xs font-bold text-gray-400 uppercase mb-2">
-                        <span>Progress Status</span><span>Target 100%</span>
-                    </div>
-                    <div class="h-3 w-full bg-slate-700 rounded-full overflow-hidden">
-                        <div id="t2-bar" class="h-full bg-cyan-500 progress-striped rounded-full" style="width: 0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- OTHER TEAMS (If more than 2) -->
-        <div id="other-teams-container" class="w-full max-w-6xl mt-12 hidden">
-            <h3 class="text-lg font-bold text-slate-400 uppercase mb-4 tracking-wider">Other Competitors</h3>
-            <div id="other-teams-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                <!-- Generates dynamically -->
-            </div>
+        <!-- Categories Container -->
+        <div id="categories-container" class="w-full max-w-7xl flex flex-col gap-16">
+            <!-- Dynamic HTML will be injected here -->
         </div>
 
     </div>
@@ -143,12 +56,11 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Get Competition ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const currentCompId = urlParams.get('id');
 
     function formatNum(num) {
-        return Number(num).toLocaleString('en-IN', { maximumFractionDigits: 1 });
+        return Number(num).toLocaleString('en-IN');
     }
 
     if (!currentCompId) {
@@ -162,15 +74,15 @@
                 const comps = snapshot.val();
                 for (let id in comps) {
                     list.innerHTML += `
-                        <a href="?id=${id}" class="block bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-700 hover:border-indigo-500 hover:shadow-[0_0_20px_rgba(99,102,241,0.3)] transition transform hover:-translate-y-1">
+                        <a href="?id=${id}" class="block bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-700 hover:border-emerald-500 transition transform hover:-translate-y-1">
                             <h2 class="text-2xl font-bold text-white">${comps[id].name}</h2>
                             <p class="text-gray-400 mt-2">Date: ${comps[id].date || 'N/A'}</p>
-                            <div class="mt-4 text-indigo-400 font-bold flex items-center gap-2">View Live Dashboard <span>&rarr;</span></div>
+                            <div class="mt-4 text-emerald-400 font-bold flex items-center gap-2">Live Dekhein <span>&rarr;</span></div>
                         </a>
                     `;
                 }
             } else {
-                list.innerHTML = "<p class='text-gray-400'>No active competitions found.</p>";
+                list.innerHTML = "<p class='text-gray-400'>No active records found.</p>";
             }
         });
     } else {
@@ -180,93 +92,87 @@
         onValue(ref(db, 'competitions/' + currentCompId), (snapshot) => {
             if (snapshot.exists()) {
                 const comp = snapshot.val();
-                
-                // Yahan par hum admin ka diya gaya naam title me set kar rahe hain
-                if(comp.name) {
-                    document.getElementById('dash-title').innerText = comp.name;
-                }
+                if(comp.name) document.getElementById('dash-title').innerText = comp.name;
 
                 if (comp.teams) {
-                    let teamsArray = Object.keys(comp.teams).map(k => comp.teams[k]);
-                    teamsArray.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
+                    // Sabhi Jamiaat ko array mein daal kar amount ke hisaab se descending order me sort karna
+                    let jamiaatArray = Object.keys(comp.teams).map(k => comp.teams[k]);
+                    jamiaatArray.sort((a, b) => (Number(b.amount) || 0) - (Number(a.amount) || 0));
 
-                    const t1 = teamsArray[0] || {name: "Team 1", amount: 0};
-                    const t2 = teamsArray[1] || {name: "Team 2", amount: 0};
+                    const container = document.getElementById('categories-container');
+                    container.innerHTML = ""; // Clear purana data
 
-                    let highestScore = Number(t1.amount) || 0;
-                    let dynamicTarget = Math.ceil((highestScore + 1) / 1000) * 1000;
-                    if(dynamicTarget < 2000) dynamicTarget = 2000; 
+                    // Category setup
+                    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                     
-                    let lead = (Number(t1.amount) || 0) - (Number(t2.amount) || 0);
+                    // 10-10 ke chunks (hisse) banana
+                    for (let i = 0; i < jamiaatArray.length; i += 10) {
+                        let chunk = jamiaatArray.slice(i, i + 10);
+                        let catIndex = i / 10;
+                        let catLetter = alphabet[catIndex] || `Ext-${catIndex}`;
+                        
+                        // Themes aur colors har category ke liye alag
+                        let titleColor, borderColor, shadowClass, numberColor;
 
-                    // --- TEAM 1 (WINNER) ---
-                    document.getElementById('t1-name').innerText = t1.name;
-                    document.getElementById('t1-score').innerText = formatNum(t1.amount);
-                    
-                    let leadBox = document.getElementById('t1-lead-box');
-                    if(lead > 0) {
-                        leadBox.classList.remove('hidden');
-                        document.getElementById('t1-lead-top').innerText = "+" + formatNum(lead) + " Lead";
-                    } else {
-                        leadBox.classList.add('hidden');
-                    }
+                        if (catIndex === 0) { // Category A (Rank 1-10)
+                            titleColor = "from-yellow-300 via-yellow-500 to-yellow-600";
+                            borderColor = "border-yellow-500/50";
+                            shadowClass = "neon-shadow-gold";
+                            numberColor = "text-yellow-400";
+                        } else if (catIndex === 1) { // Category B (Rank 11-20)
+                            titleColor = "from-sky-300 via-sky-400 to-blue-500";
+                            borderColor = "border-sky-400/50";
+                            shadowClass = "neon-shadow-silver";
+                            numberColor = "text-sky-400";
+                        } else if (catIndex === 2) { // Category C (Rank 21-30)
+                            titleColor = "from-orange-400 via-orange-500 to-red-500";
+                            borderColor = "border-orange-500/50";
+                            shadowClass = "neon-shadow-bronze";
+                            numberColor = "text-orange-400";
+                        } else { // Category D, E, F etc..
+                            titleColor = "from-purple-400 to-indigo-500";
+                            borderColor = "border-indigo-500/30";
+                            shadowClass = "neon-shadow-default";
+                            numberColor = "text-indigo-400";
+                        }
 
-                    // Aage (Lead) update
-                    document.getElementById('t1-lead-amount').innerText = "+" + formatNum(lead);
-                    
-                    let t1Pct = Math.min(((t1.amount / dynamicTarget) * 100), 100).toFixed(1);
-                    document.getElementById('t1-percent').innerText = t1Pct + "%";
-                    document.getElementById('t1-bar').style.width = t1Pct + "%";
-
-                    // --- TEAM 2 (CHALLENGER) ---
-                    document.getElementById('t2-name').innerText = t2.name;
-                    document.getElementById('t2-score').innerText = formatNum(t2.amount);
-                    
-                    // Piche (Trail) update
-                    document.getElementById('t2-trail-amount').innerText = "-" + formatNum(lead);
-                    
-                    let t2Pct = Math.min(((t2.amount / dynamicTarget) * 100), 100).toFixed(1);
-                    document.getElementById('t2-percent').innerText = t2Pct + "%";
-                    document.getElementById('t2-bar').style.width = t2Pct + "%";
-
-                    if(t1.amount === t2.amount && t1.amount > 0) {
-                        document.getElementById('t1-badge').innerText = "TIE";
-                        document.getElementById('t2-badge').innerText = "TIE";
-                    } else {
-                        document.getElementById('t1-badge').innerHTML = "🏆 WINNER";
-                        document.getElementById('t2-badge').innerText = "CHALLENGER";
-                    }
-
-                    // --- OTHER TEAMS ---
-                    const otherContainer = document.getElementById('other-teams-container');
-                    const otherList = document.getElementById('other-teams-list');
-                    
-                    if (teamsArray.length > 2) {
-                        otherContainer.classList.remove('hidden');
-                        otherList.innerHTML = "";
-                        for(let i = 2; i < teamsArray.length; i++) {
-                            let t = teamsArray[i];
-                            let neededToJoin = (Number(t2.amount) || 0) - (Number(t.amount) || 0);
+                        // Category Header Generate karna
+                        let html = `
+                        <div class="w-full">
+                            <div class="flex items-center justify-center gap-4 mb-6">
+                                <div class="h-[2px] flex-1 bg-gradient-to-r from-transparent to-slate-600"></div>
+                                <h2 class="text-4xl md:text-5xl font-black bg-gradient-to-r ${titleColor} bg-clip-text text-transparent text-center drop-shadow-md">
+                                    Category ${catLetter}
+                                </h2>
+                                <div class="h-[2px] flex-1 bg-gradient-to-l from-transparent to-slate-600"></div>
+                            </div>
                             
-                            otherList.innerHTML += `
-                                <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-md flex flex-col justify-between hover:border-indigo-500 transition">
-                                    <div class="flex justify-between items-start mb-3">
-                                        <div>
-                                            <div class="text-xs text-indigo-400 font-bold uppercase mb-1">Rank #${i+1}</div>
-                                            <div class="font-extrabold text-lg text-white">${t.name}</div>
-                                        </div>
-                                        <div class="text-3xl font-black text-slate-200">${formatNum(t.amount)}</div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+                        `;
+
+                        // Uss category ke andar 10 Jamiaat ke boxes
+                        chunk.forEach((jamia, index) => {
+                            let globalRank = i + index + 1;
+                            html += `
+                                <div class="relative bg-slate-800/80 border ${borderColor} ${shadowClass} rounded-2xl p-6 flex flex-col items-center text-center transform transition duration-300 hover:scale-105 hover:bg-slate-800">
+                                    <div class="absolute -top-3 -left-3 bg-slate-900 border ${borderColor} w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-lg">
+                                        #${globalRank}
                                     </div>
-                                    <div class="mt-2 pt-3 border-t border-slate-700">
-                                        <div class="text-sm font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-3 py-2 rounded-lg inline-block w-full text-center">
-                                            Aage aane ke liye <span class="text-amber-300 font-black">${formatNum(neededToJoin)}</span> units chahiye
+                                    <h3 class="text-lg md:text-xl font-bold text-white mb-3 line-clamp-2 min-h-[56px] flex items-center justify-center w-full">
+                                        ${jamia.name}
+                                    </h3>
+                                    <div class="mt-auto">
+                                        <p class="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">Entry Units</p>
+                                        <div class="text-3xl md:text-4xl font-black ${numberColor} drop-shadow-lg">
+                                            ${formatNum(jamia.amount)}
                                         </div>
                                     </div>
                                 </div>
                             `;
-                        }
-                    } else {
-                        otherContainer.classList.add('hidden');
+                        });
+
+                        html += `</div></div>`; // Close grid and category wrapper
+                        container.innerHTML += html;
                     }
                 }
             }
