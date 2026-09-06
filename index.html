@@ -36,15 +36,12 @@
     .team-box { background: #f8f9fa; padding: 18px; border-radius: 10px; position: relative; border: 1px solid #ddd; }
     .remove-team { position: absolute; top: 10px; right: 10px; background: #dc3545; padding: 5px 10px; font-size: 12px; }
 
-    /* Live Dashboards */
-    .live-teams { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-top: 20px; }
-    .live-box { text-align: center; padding: 25px 15px; border-radius: 10px; background: #f8f9fa; border: 2px solid #eee; }
-    .live-name { font-size: 20px; font-weight: bold; }
-    .live-amount { font-size: 32px; font-weight: bold; margin: 15px 0; color: #198754; }
-
     /* Team Interface */
     .huge-amount { font-size: 40px; font-weight: bold; text-align: center; margin: 15px 0; color: #1769aa; }
     .search-box { padding: 15px; font-size: 16px; border: 2px solid #1769aa; border-radius: 8px; width: 100%; margin-bottom: 20px; outline: none;}
+
+    /* Bulk Upload Box */
+    .bulk-box { background: #eaf4fb; border: 2px dashed #1769aa; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
 </style>
 </head>
 <body>
@@ -90,14 +87,40 @@
             <label>Date</label>
             <input id="compDate" type="date">
             
-            <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Jamiaat List</h3>
-            <p style="font-size: 13px; color: #666; margin-top: 5px;">Ek User ko bohot saari Jamiaat assign karne ke liye, un sabka <b>Login ID</b> aur <b>Password</b> same rakhein.</p>
+            <!-- NEW: BULK CSV UPLOAD SECTION -->
+            <div class="bulk-box mt-3">
+                <h3 style="margin-bottom: 10px; color:#1769aa;">1. Upload Jamiaat List (CSV)</h3>
+                <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Apni <b>Jamiaat List.csv</b> upload karein. File me 'Region' aur 'Jamia Name' ke columns hone chahiye.</p>
+                <input type="file" id="csvFileInput" accept=".csv" style="padding: 5px; background: #fff; border: 1px solid #ccc;">
+                <div id="csvStatus" style="color: #198754; font-weight: bold; margin-top: 10px;"></div>
+
+                <h3 style="margin-top: 20px; margin-bottom: 10px; color:#1769aa;">2. Assign Region to User</h3>
+                <p style="font-size: 13px; color: #555; margin-bottom: 10px;">Region ka naam likhein aur User ID banayein. System khud saari Jamiaat nikal kar assign kar dega.</p>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex:1; min-width: 200px;">
+                        <label>Region Name</label>
+                        <input type="text" id="bulkRegionName" placeholder="e.g., North Region">
+                    </div>
+                    <div style="flex:1; min-width: 200px;">
+                        <label>Assign User Login ID</label>
+                        <input type="text" id="bulkLoginId" placeholder="User ID">
+                    </div>
+                    <div style="flex:1; min-width: 200px;">
+                        <label>Assign User Password</label>
+                        <input type="text" id="bulkPassword" placeholder="Password">
+                    </div>
+                </div>
+                <button id="applyBulkBtn" class="btn-success" style="width: 100%; margin-top: 15px;">Add All Jamiaat of this Region</button>
+            </div>
+
+            <h3 style="margin-top: 25px; border-bottom: 2px solid #eee; padding-bottom: 10px;">Currently Assigned Jamiaat</h3>
             <div id="teamInputsContainer" class="teams-grid"></div>
             
-            <button id="addTeamBtn" class="btn-secondary mt-3">+ Add Another Jamia</button>
+            <button id="addTeamBtn" class="btn-secondary mt-3">+ Add Single Jamia Manually</button>
             
             <hr style="margin: 25px 0; border: 0; border-top: 1px solid #ddd;">
-            <button id="saveCompBtn" class="btn-success">Save Record</button>
+            <button id="saveCompBtn" class="btn-success" style="font-size: 18px; padding: 15px;">Save Record</button>
             <div id="saveStatus" class="text-center mt-3 font-weight-bold"></div>
         </div>
     </div>
@@ -114,7 +137,6 @@
         
         <div class="card">
             <h3>Jamia Search Karein</h3>
-            <!-- SEARCH BOX FOR QUICK ENTRY -->
             <input type="text" id="jamiaSearchBox" class="search-box" placeholder="🔍 Jamia ka naam likhein...">
             
             <div id="teamUpdateFormsContainer" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
@@ -127,7 +149,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    // ✅ FIREBASE CONFIG
+    // ✅ FIREBASE CONFIG (Aapki details)
     const firebaseConfig = {
         apiKey: "AIzaSyC87_ca7MsGB2WjOnr6dC-IYL78TYx0Oyg",
         authDomain: "telethon-28c88.firebaseapp.com",
@@ -143,9 +165,9 @@
 
     let currentRole = localStorage.getItem('userRole') || null;
     let managedTeams = JSON.parse(localStorage.getItem('managedTeams')) || []; 
-    let activeAdminCompId = null; 
     let editingCompId = null;
     let globalCompetitions = {}; 
+    let csvData = []; // CSV data store karne ke liye
 
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
@@ -161,6 +183,7 @@
         });
     });
 
+    // 1. LOGIN
     document.getElementById('loginBtn').addEventListener('click', async () => {
         const id = document.getElementById('loginId').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
@@ -231,6 +254,9 @@
         editingCompId = compId || "comp_" + Date.now();
         document.getElementById('teamInputsContainer').innerHTML = "";
         document.getElementById('saveStatus').innerText = "";
+        document.getElementById('csvStatus').innerText = "";
+        document.getElementById('csvFileInput').value = "";
+        csvData = []; // Clear old loaded CSV
 
         if(compId && globalCompetitions[compId]) {
             const comp = globalCompetitions[compId];
@@ -238,16 +264,97 @@
             if(comp.teams) { for(let tId in comp.teams) { appendTeamInputUI(tId, comp.teams[tId].name, comp.teams[tId].loginId || tId, comp.teams[tId].password, comp.teams[tId].amount); } }
         } else {
             document.getElementById('compName').value = ""; document.getElementById('compDate').value = "";
-            appendTeamInputUI(); appendTeamInputUI();
         }
         switchScreen('admin-edit-screen');
     }
+
+    // 2. CSV PARSING LOGIC
+    function parseCSVLine(text) {
+        let ret = []; let inQuote = false; let value = '';
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (inQuote) {
+                if (char === '"') {
+                    if (i + 1 < text.length && text[i+1] === '"') { value += '"'; i++; } 
+                    else { inQuote = false; }
+                } else { value += char; }
+            } else {
+                if (char === '"') { inQuote = true; } 
+                else if (char === ',') { ret.push(value); value = ''; } 
+                else { value += char; }
+            }
+        }
+        ret.push(value);
+        return ret;
+    }
+
+    document.getElementById('csvFileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const text = event.target.result;
+            const lines = text.split('\n');
+            csvData = [];
+            
+            // Extract headers
+            let headers = parseCSVLine(lines[0]).map(h => h.trim().toLowerCase());
+            let regIdx = headers.findIndex(h => h.includes('region'));
+            let nameIdx = headers.findIndex(h => h.includes('jamia') || h.includes('name'));
+
+            // Agar header name na mile, default 1st and 2nd column set karein
+            if(regIdx === -1) regIdx = 0;
+            if(nameIdx === -1) nameIdx = 1;
+
+            for (let i = 1; i < lines.length; i++) {
+                if(!lines[i].trim()) continue;
+                let cols = parseCSVLine(lines[i]);
+                if (cols.length > Math.max(regIdx, nameIdx)) {
+                    csvData.push({
+                        region: cols[regIdx].trim(),
+                        name: cols[nameIdx].trim()
+                    });
+                }
+            }
+            document.getElementById('csvStatus').innerText = `✅ CSV File Uploaded! Total Jamiaat loaded: ${csvData.length}`;
+        };
+        reader.readAsText(file);
+    });
+
+    // 3. BULK APPLY BUTTON
+    document.getElementById('applyBulkBtn').onclick = () => {
+        const regionName = document.getElementById('bulkRegionName').value.trim();
+        const loginId = document.getElementById('bulkLoginId').value.trim();
+        const password = document.getElementById('bulkPassword').value.trim();
+
+        if(csvData.length === 0) { alert("Pehle 'Jamiaat List.csv' file upload karein!"); return; }
+        if(!regionName || !loginId || !password) { alert("Region Name, User ID, aur Password daalna zaroori hai!"); return; }
+
+        const matchingJamiaat = csvData.filter(j => j.region.toLowerCase() === regionName.toLowerCase());
+        
+        if(matchingJamiaat.length === 0) {
+            alert(`Region '${regionName}' CSV file mein nahi mila. Spelling check karein.`);
+            return;
+        }
+
+        // Generate UI boxes for each Jamia automatically
+        matchingJamiaat.forEach(jamia => {
+            appendTeamInputUI("", jamia.name, loginId, password, 0);
+        });
+
+        alert(`✅ Success! ${matchingJamiaat.length} Jamiaat niche list mein add ho gayin hain.`);
+        
+        // Clear fields for next entry
+        document.getElementById('bulkRegionName').value = "";
+        document.getElementById('bulkLoginId').value = "";
+        document.getElementById('bulkPassword').value = "";
+    };
 
     document.getElementById('addTeamBtn').onclick = () => { appendTeamInputUI(); };
 
     function appendTeamInputUI(tId = "", tName = "", tLoginId = "", tPass = "", tAmount = 0) {
         const div = document.createElement('div'); div.className = "team-box team-entry"; div.dataset.amount = tAmount; 
-        const uid = tId || "team_" + Math.floor(Math.random() * 100000); div.dataset.teamId = uid;
+        const uid = tId || "jamia_" + Math.floor(Math.random() * 1000000); div.dataset.teamId = uid;
         
         div.innerHTML = `
             <button class="remove-team text-white border-0 cursor-pointer" onclick="this.parentElement.remove()">X</button>
@@ -258,9 +365,10 @@
             <label>User Password</label>
             <input type="text" class="t-pass" value="${tPass}" placeholder="Password">
         `;
-        document.getElementById('teamInputsContainer').appendChild(div);
+        document.getElementById('teamInputsContainer').prepend(div); // Nai jamia upar dikhegi
     }
 
+    // 4. SAVE TO FIREBASE
     document.getElementById('saveCompBtn').onclick = async () => {
         const compName = document.getElementById('compName').value || "Unnamed Record";
         const compDate = document.getElementById('compDate').value;
@@ -269,7 +377,12 @@
         let teamsData = {};
         document.querySelectorAll('.team-entry').forEach(el => {
             const id = el.dataset.teamId;
-            teamsData[id] = { name: el.querySelector('.t-name').value || "Unnamed", loginId: el.querySelector('.t-login-id').value || id, password: el.querySelector('.t-pass').value || "1234", amount: Number(el.dataset.amount) || 0 };
+            teamsData[id] = { 
+                name: el.querySelector('.t-name').value || "Unnamed", 
+                loginId: el.querySelector('.t-login-id').value || id, 
+                password: el.querySelector('.t-pass').value || "1234", 
+                amount: Number(el.dataset.amount) || 0 
+            };
         });
 
         status.innerHTML = "<span style='color:blue'>Saving...</span>";
@@ -280,6 +393,7 @@
         } catch(e) { status.innerHTML = "<span style='color:red'>Error saving data</span>"; }
     };
 
+    // 5. USER SCREEN (SEARCH & ENTRY)
     function renderTeamScreen() {
         if(!managedTeams || managedTeams.length === 0) return;
         let mainCompId = managedTeams[0].compId; const comp = globalCompetitions[mainCompId];
@@ -293,7 +407,6 @@
             const c = globalCompetitions[mt.compId];
             if(c && c.teams && c.teams[mt.teamId]) {
                 const t = c.teams[mt.teamId];
-                // Added jamia-card class and data-name for searching
                 formsHtml += `
                     <div class="jamia-card" data-name="${t.name.toLowerCase()}" style="background:#f8f9fa; padding:20px; border-radius:8px; border:2px solid #eee;">
                         <h4 style="color:#1769aa; font-size:18px; text-align:center;">${t.name}</h4>
